@@ -1,0 +1,8 @@
+Changes to incorporate:
+* Config settings
+* Standard package requirements
+* Pen test remediations
+* Docker environments
+* Proxy server and config (optional)
+* Replace allauth (optional)
+
