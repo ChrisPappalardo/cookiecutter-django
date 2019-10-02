@@ -1,50 +1,85 @@
-from django.contrib.auth import get_user_model
+# -*- coding: utf-8 -*-
+
+'''
+users/views
+-----------
+
+views for the users app
+'''
+
+import logging
+
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.urls import reverse
-from django.views.generic import DetailView, RedirectView, UpdateView
-from django.contrib import messages
-from django.utils.translation import ugettext_lazy as _
+from django.contrib.messages.views import SuccessMessageMixin
+from django.urls import reverse, reverse_lazy
+from django.views.generic import (
+    RedirectView,
+    UpdateView,
+)
 
-User = get_user_model()
+from crispy_forms.bootstrap import FormActions
+from crispy_forms.helper import FormHelper
+from crispy_forms.layout import (
+    Fieldset,
+    Layout,
+    Reset,
+    Submit,
+)
+
+from .forms import UserInfoForm
+from .models import Profile
 
 
-class UserDetailView(LoginRequiredMixin, DetailView):
-
-    model = User
-    slug_field = "username"
-    slug_url_kwarg = "username"
+logger = logging.getLogger('django')
 
 
-user_detail_view = UserDetailView.as_view()
+class UserInfoUpdateView(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
+    '''
+    user info update view
+    '''
 
+    form_class = UserInfoForm
+    success_message = 'Successfully updated user info.'
+    success_url = reverse_lazy('users:info')
+    template_name = 'users/user_update.html'
 
-class UserUpdateView(LoginRequiredMixin, UpdateView):
+    def get_form(self, form_class=None):
+        form = super().get_form(form_class)
+        form.helper = FormHelper()
+        form.helper.layout = Layout(
+            Fieldset(
+                '',
+                'first_name',
+                'last_name',
+                'country',
+            ),
+            FormActions(
+                Submit('submit', 'Save'),
+                Reset('reset', 'Cancel'),
+            ),
+        )
 
-    model = User
-    fields = ["name"]
+        return form
 
-    def get_success_url(self):
-        return reverse("users:detail", kwargs={"username": self.request.user.username})
+    def get_initial(self):
+        initial = super().get_initial()
+        profile = self.get_object()
+
+        initial['first_name'] = profile.user.first_name
+        initial['last_name'] = profile.user.last_name
+
+        return initial
 
     def get_object(self):
-        return User.objects.get(username=self.request.user.username)
-
-    def form_valid(self, form):
-        messages.add_message(
-            self.request, messages.INFO, _("Infos successfully updated")
-        )
-        return super().form_valid(form)
-
-
-user_update_view = UserUpdateView.as_view()
+        return self.request.user.profile
 
 
 class UserRedirectView(LoginRequiredMixin, RedirectView):
+    '''
+    user redirect view
+    '''
 
     permanent = False
 
     def get_redirect_url(self):
-        return reverse("users:detail", kwargs={"username": self.request.user.username})
-
-
-user_redirect_view = UserRedirectView.as_view()
+        return reverse('users:info')

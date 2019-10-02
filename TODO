@@ -1,6 +1,6 @@
 Changes to incorporate:
-* Config settings
-* Standard package requirements
+* Update config settings
+* Update standard package requirements
 * Pen test remediations
 * Docker environments
 * Proxy server and config (optional)
