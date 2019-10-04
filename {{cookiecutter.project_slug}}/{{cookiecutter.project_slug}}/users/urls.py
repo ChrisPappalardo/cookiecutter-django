@@ -20,9 +20,9 @@ app_name = 'users'
 urlpatterns = [
 
     path(
-        'info/',
+        'detail/',
         UserInfoUpdateView.as_view(),
-        name='info',
+        name='detail',
     ),
 
     path(

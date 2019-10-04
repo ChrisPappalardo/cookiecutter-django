@@ -1,8 +1,16 @@
-{% extends 'base.html' %}
+{% raw %}{% extends 'base.html' %}
 
 {% load crispy_forms_tags %}
 
-{% block section_content %}
+{% block content %}
+<div class="container">
+  <div class="row justify-content-center">
+    <div class="col-12 col-md-9">
+      <section id="content">
+        {% crispy form %}
+      </section>
+    </div>
+  </div>
+</div>
 <br>
-{% crispy form %}
-{% endblock section_content %}
+{% endblock content %}{% endraw %}

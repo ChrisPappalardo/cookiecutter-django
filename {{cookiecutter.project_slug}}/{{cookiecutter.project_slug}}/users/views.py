@@ -40,7 +40,7 @@ class UserInfoUpdateView(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
 
     form_class = UserInfoForm
     success_message = 'Successfully updated user info.'
-    success_url = reverse_lazy('users:info')
+    success_url = reverse_lazy('users:detail')
     template_name = 'users/user_update.html'
 
     def get_form(self, form_class=None):
@@ -82,4 +82,4 @@ class UserRedirectView(LoginRequiredMixin, RedirectView):
     permanent = False
 
     def get_redirect_url(self):
-        return reverse('users:info')
+        return reverse('users:detail')

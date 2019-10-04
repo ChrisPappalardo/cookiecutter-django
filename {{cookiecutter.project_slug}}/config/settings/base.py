@@ -70,6 +70,7 @@ DJANGO_APPS = [
     "django.contrib.admin",
 ]
 THIRD_PARTY_APPS = [
+    "djcorecap",
     "crispy_forms",
     "allauth",
     "allauth.account",

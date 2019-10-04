@@ -30,6 +30,7 @@ django-compressor==2.3  # https://github.com/django-compressor/django-compressor
 django-redis==4.10.0  # https://github.com/niwinz/django-redis
 django-countries==5.5
 django-recaptcha==2.0.2
+git+git://github.com/ChrisPappalardo/djcorecap.git@master#egg=djcorecap
 
 # Django REST Framework
 djangorestframework==3.10.3  # https://github.com/encode/django-rest-framework
