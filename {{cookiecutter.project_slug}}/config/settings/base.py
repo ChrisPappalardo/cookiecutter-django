@@ -70,6 +70,7 @@ DJANGO_APPS = [
     "django.contrib.admin",
 ]
 THIRD_PARTY_APPS = [
+    "captcha",
     "djcorecap",
     "crispy_forms",
     "allauth",
@@ -293,6 +294,10 @@ ACCOUNT_EMAIL_VERIFICATION = "mandatory"
 ACCOUNT_ADAPTER = "{{cookiecutter.project_slug}}.users.adapters.AccountAdapter"
 # https://django-allauth.readthedocs.io/en/latest/configuration.html
 SOCIALACCOUNT_ADAPTER = "{{cookiecutter.project_slug}}.users.adapters.SocialAccountAdapter"
+# https://django-allauth.readthedocs.io/en/latest/forms.html#reset-password-allauth-account-forms-resetpasswordform
+ACCOUNT_FORMS = {
+    "reset_password": "{{ cookiecutter.project_slug }}.users.forms.ResetPasswordForm",
+}
 
 {% if cookiecutter.use_compressor == 'y' -%}
 # django-compressor

@@ -11,7 +11,7 @@ SECRET_KEY = env(
     default="!!!SET DJANGO_SECRET_KEY!!!",
 )
 # https://docs.djangoproject.com/en/dev/ref/settings/#allowed-hosts
-ALLOWED_HOSTS = ["localhost", "0.0.0.0", "127.0.0.1"]
+ALLOWED_HOSTS = ["*"]
 
 # CACHES
 # ------------------------------------------------------------------------------
@@ -79,5 +79,9 @@ CELERY_TASK_ALWAYS_EAGER = True
 CELERY_TASK_EAGER_PROPAGATES = True
 
 {%- endif %}
+# RECAPTCHA
+# ------------------------------------------------------------------------------
+SILENCED_SYSTEM_CHECKS = ["captcha.recaptcha_test_key_error"]
+
 # Your stuff...
 # ------------------------------------------------------------------------------

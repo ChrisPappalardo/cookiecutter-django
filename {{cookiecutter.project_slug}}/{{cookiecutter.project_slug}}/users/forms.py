@@ -9,9 +9,20 @@ forms for the users app
 
 from django.forms import ModelForm, CharField
 
+from allauth.account.forms import ResetPasswordForm as _ResetPasswordForm
 from captcha.fields import ReCaptchaField
 
 from .models import Profile
+
+
+class ResetPasswordForm(_ResetPasswordForm):
+    '''
+    custom password reset form
+    '''
+
+    captcha = ReCaptchaField(label='')
+
+    # TODO: modify email validator to check recaptcha field first or suppress
 
 
 class UserInfoForm(ModelForm):
