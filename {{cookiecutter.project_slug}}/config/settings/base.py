@@ -209,6 +209,8 @@ CSRF_COOKIE_HTTPONLY = True
 SECURE_BROWSER_XSS_FILTER = True
 # https://docs.djangoproject.com/en/dev/ref/settings/#x-frame-options
 X_FRAME_OPTIONS = "DENY"
+# timeout sessions after 15m of inactivity
+SESSION_COOKIE_AGE = env('DJANGO_SESSION_TIMEOUT', default=900)
 
 # EMAIL
 # ------------------------------------------------------------------------------
