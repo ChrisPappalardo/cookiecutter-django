@@ -4,7 +4,7 @@ ENV PYTHONUNBUFFERED 1
 
 RUN apk update \
   # basic dependencies
-  && apk add curl git less man nano sudo wget \
+  && apk add bash curl git less man nano sudo wget \
   # psycopg2 dependencies
   && apk add --virtual build-deps gcc python3-dev musl-dev \
   && apk add postgresql-dev \
