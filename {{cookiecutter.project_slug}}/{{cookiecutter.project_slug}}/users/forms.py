@@ -7,12 +7,19 @@ users/forms
 forms for the users app
 '''
 
+import logging
+
 from django.forms import ModelForm, CharField
 
+from allauth.account.adapter import get_adapter
 from allauth.account.forms import ResetPasswordForm as _ResetPasswordForm
+from allauth.account.utils import filter_users_by_email
 from captcha.fields import ReCaptchaField
 
 from .models import Profile
+
+
+logger = logging.getLogger('django')
 
 
 class ResetPasswordForm(_ResetPasswordForm):
@@ -22,7 +29,19 @@ class ResetPasswordForm(_ResetPasswordForm):
 
     captcha = ReCaptchaField(label='')
 
-    # TODO: modify email validator to check recaptcha field first or suppress
+    def clean_email(self):
+        '''
+        suppress non-existing email validation error
+        '''
+
+        email = self.cleaned_data['email']
+        email = get_adapter().clean_email(email)
+        self.users = filter_users_by_email(email)
+
+        if not self.users:
+            logger.error(f'non-existent email reset attempt on {email}')
+
+        return self.cleaned_data['email']
 
 
 class UserInfoForm(ModelForm):
