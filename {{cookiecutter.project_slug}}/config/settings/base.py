@@ -297,6 +297,7 @@ SOCIALACCOUNT_ADAPTER = "{{cookiecutter.project_slug}}.users.adapters.SocialAcco
 # https://django-allauth.readthedocs.io/en/latest/forms.html#reset-password-allauth-account-forms-resetpasswordform
 ACCOUNT_FORMS = {
     "reset_password": "{{ cookiecutter.project_slug }}.users.forms.ResetPasswordForm",
+    "signup": "{{ cookiecutter.project_slug }}.users.forms.UserSignupForm",
 }
 
 {% if cookiecutter.use_compressor == 'y' -%}

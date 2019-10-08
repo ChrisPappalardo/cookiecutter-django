@@ -13,6 +13,7 @@ from django.forms import ModelForm, CharField
 
 from allauth.account.adapter import get_adapter
 from allauth.account.forms import ResetPasswordForm as _ResetPasswordForm
+from allauth.account.forms import SignupForm as _SignupForm
 from allauth.account.utils import filter_users_by_email
 from captcha.fields import ReCaptchaField
 
@@ -68,7 +69,7 @@ class UserInfoForm(ModelForm):
         user.save()
 
 
-class UserSignupForm(UserInfoForm):
+class UserSignupForm(_SignupForm):
     '''
     user signup form with recaptcha
     '''
@@ -80,13 +81,5 @@ class UserSignupForm(UserInfoForm):
         'email',
         'password1',
         'password2',
-        'first_name',
-        'last_name',
-        'country',
         'captcha',
     ]
-
-    def signup(self, request, user):
-        self.update_name(user)
-        user.profile.country = self.cleaned_data['country']
-        user.profile.save()
