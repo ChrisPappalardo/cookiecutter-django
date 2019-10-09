@@ -23,6 +23,10 @@ CACHES = {
     }
 }
 
+# SECURITY
+# ------------------------------------------------------------------------------
+SESSION_COOKIE_AGE = env('DJANGO_SESSION_TIMEOUT', default=86400)
+
 # EMAIL
 # ------------------------------------------------------------------------------
 {% if cookiecutter.use_mailhog == 'y' and cookiecutter.use_docker == 'y' -%}
