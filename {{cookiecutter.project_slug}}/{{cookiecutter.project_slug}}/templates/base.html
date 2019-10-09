@@ -35,6 +35,53 @@
 {% endraw %}{{ cookiecutter.project_name }}{% raw %}
 {% endblock brand %}
 
+{% block content %}
+<div class="container bg-white">
+  <div class="row justify-content-center">
+    <div class="col">
+      <hr>
+    </div>
+  </div>
+  <div class="row justify-content-center main">
+    <div class="col-6">
+      <!-- headline -->
+      {% block header %}
+      <header id="headline">
+        <br>
+        <h1 class="text-uppercase text-center font-weight-bold">
+          {% block headline %}{% endblock headline %}
+        </h1>
+        <hr>
+        <p class="headline-content">
+          {% block headline_content %}{% endblock headline_content %}
+        </p>
+      </header>
+      {% endblock header %}
+      <!-- content -->
+      {% block section %}
+      <section id="content">
+        {% block subnav %}{% endblock subnav %}
+        {% block section_content %}Content...{% endblock section_content %}
+      </section>
+      {% endblock section %}
+    </div>
+  </div>
+  <div class="row justify-content-center">
+    <div class="col-11">
+      <!-- footer -->
+      {% block footer %}
+      <footer id="footer" class="footer">
+        <hr>
+        <p class="text-center text-muted small">
+          version {{ app_version }}
+        </p>
+      </footer>
+      {% endblock footer %}
+    </div>
+  </div>
+</div>
+{% endblock content %}
+
 {% block external_javascript %}
 {% endraw %}{% if cookiecutter.custom_bootstrap_compilation == "y" and cookiecutter.js_task_runner == "Gulp" %}{% raw %}
 <!-- Vendor dependencies bundled as one file-->
