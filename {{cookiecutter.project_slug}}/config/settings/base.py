@@ -242,23 +242,44 @@ MANAGERS = ADMINS
 # https://docs.djangoproject.com/en/dev/ref/settings/#logging
 # See https://docs.djangoproject.com/en/dev/topics/logging for
 # more details on how to customize your logging configuration.
+# Base logging config that is updated with specifics by each environment
 LOGGING = {
     "version": 1,
     "disable_existing_loggers": False,
+    "filters": {
+        "require_debug_false": {
+            "()": "django.utils.log.RequireDebugFalse",
+        },
+        "require_debug_true": {
+            "()": "django.utils.log.RequireDebugTrue",
+        },
+    },
     "formatters": {
+        "simple": {
+            "format": "%(levelname)s %(asctime)s %(message)s",
+        },
         "verbose": {
             "format": "%(levelname)s %(asctime)s %(module)s "
-            "%(process)d %(thread)d %(message)s"
+                      "%(process)d %(thread)d %(message)s",
+        },
+    },
+    "loggers": {
+        "django": {
+            "handlers": ["console", "mail_admins"],
+            "level": "INFO",
+            "propogate": True,
+        },
+        "django.request": {
+            "handlers": ["mail_admins"],
+            "level": "INFO",
+            "propagate": True
+        },
+        "django.security.DisallowedHost": {
+            "level": "INFO",
+            "handlers": ["mail_admins"],
+            "propagate": True
         }
     },
-    "handlers": {
-        "console": {
-            "level": "DEBUG",
-            "class": "logging.StreamHandler",
-            "formatter": "verbose",
-        }
-    },
-    "root": {"level": "INFO", "handlers": ["console"]},
 }
 
 {% if cookiecutter.use_celery == 'y' -%}

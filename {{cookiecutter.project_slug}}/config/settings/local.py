@@ -46,6 +46,27 @@ EMAIL_BACKEND = env(
 )
 {%- endif %}
 
+# LOGGING
+# ------------------------------------------------------------------------------
+# DEBUG on:   send INFO and above to the console with simple formatting
+# DEBUG off:  send ERROR and above to AdminEmailHandler with simple formatting
+LOGGING.update({
+    "handlers": {
+        "console": {
+            "level": "INFO",
+            "filters": ["require_debug_true"],
+            "class": "logging.StreamHandler",
+            "formatter": "simple",
+        },
+        "mail_admins": {
+            "level": "ERROR",
+            "filters": ["require_debug_false"],
+            "class": "django.utils.log.AdminEmailHandler",
+            "formatter": "simple",
+        },
+    },
+})
+
 # django-debug-toolbar
 # ------------------------------------------------------------------------------
 # https://django-debug-toolbar.readthedocs.io/en/latest/installation.html#prerequisites

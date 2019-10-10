@@ -1,14 +1,9 @@
 {% if cookiecutter.use_sentry == 'y' -%}
-import logging
-
 import sentry_sdk
-
 from sentry_sdk.integrations.django import DjangoIntegration
-from sentry_sdk.integrations.logging import LoggingIntegration
-{%- if cookiecutter.use_celery == 'y' %}
+{% if cookiecutter.use_celery == 'y' -%}
 from sentry_sdk.integrations.celery import CeleryIntegration
 {% endif %}
-
 {% endif -%}
 from .base import *  # noqa
 from .base import env
@@ -204,101 +199,47 @@ INSTALLED_APPS = ["collectfast"] + INSTALLED_APPS  # noqa F405
 {% endif %}
 # LOGGING
 # ------------------------------------------------------------------------------
-# https://docs.djangoproject.com/en/dev/ref/settings/#logging
-# See https://docs.djangoproject.com/en/dev/topics/logging for
-# more details on how to customize your logging configuration.
 {% if cookiecutter.use_sentry == 'n' -%}
-# A sample logging configuration. The only tangible logging
-# performed by this configuration is to send an email to
-# the site admins on every HTTP 500 error when DEBUG=False.
-LOGGING = {
-    "version": 1,
-    "disable_existing_loggers": False,
-    "filters": {"require_debug_false": {"()": "django.utils.log.RequireDebugFalse"}},
-    "formatters": {
-        "verbose": {
-            "format": "%(levelname)s %(asctime)s %(module)s "
-            "%(process)d %(thread)d %(message)s"
-        }
-    },
+# Simple warning logging to console and error logging to email
+LOGGING.update({
     "handlers": {
+        "console": {
+            "level": "WARNING",
+            "class": "logging.StreamHandler",
+            "formatter": "simple",
+        },
         "mail_admins": {
             "level": "ERROR",
-            "filters": ["require_debug_false"],
             "class": "django.utils.log.AdminEmailHandler",
-        },
-        "console": {
-            "level": "DEBUG",
-            "class": "logging.StreamHandler",
             "formatter": "verbose",
         },
     },
-    "root": {"level": "INFO", "handlers": ["console"]},
-    "loggers": {
-        "django.request": {
-            "handlers": ["mail_admins"],
-            "level": "ERROR",
-            "propagate": True,
-        },
-        "django.security.DisallowedHost": {
-            "level": "ERROR",
-            "handlers": ["console", "mail_admins"],
-            "propagate": True,
-        },
-    },
-}
+})
 {% else %}
-LOGGING = {
-    "version": 1,
-    "disable_existing_loggers": True,
-    "formatters": {
-        "verbose": {
-            "format": "%(levelname)s %(asctime)s %(module)s "
-            "%(process)d %(thread)d %(message)s"
-        }
-    },
+# Simple warning logging to console
+LOGGING.update({
     "handlers": {
         "console": {
-            "level": "DEBUG",
+            "level": "WARNING",
             "class": "logging.StreamHandler",
-            "formatter": "verbose",
-        }
-    },
-    "root": {"level": "INFO", "handlers": ["console"]},
-    "loggers": {
-        "django.db.backends": {
-            "level": "ERROR",
-            "handlers": ["console"],
-            "propagate": False,
-        },
-        # Errors logged by the SDK itself
-        "sentry_sdk": {"level": "ERROR", "handlers": ["console"], "propagate": False},
-        "django.security.DisallowedHost": {
-            "level": "ERROR",
-            "handlers": ["console"],
-            "propagate": False,
+            "formatter": "simple",
         },
     },
-}
+})
 
 # Sentry
 # ------------------------------------------------------------------------------
 SENTRY_DSN = env("SENTRY_DSN")
-SENTRY_LOG_LEVEL = env.int("DJANGO_SENTRY_LOG_LEVEL", logging.INFO)
 
-sentry_logging = LoggingIntegration(
-    level=SENTRY_LOG_LEVEL,  # Capture info and above as breadcrumbs
-    event_level=logging.ERROR,  # Send errors as events
-)
-
-{%- if cookiecutter.use_celery == 'y' %}
 sentry_sdk.init(
     dsn=SENTRY_DSN,
-    integrations=[sentry_logging, DjangoIntegration(), CeleryIntegration()],
+    integrations=[
+        DjangoIntegration(),
+        {% if cookiecutter.use_celery == 'y' -%}
+        CeleryIntegration(),
+        {% endif -%}
+    ],
 )
-{% else %}
-sentry_sdk.init(dsn=SENTRY_DSN, integrations=[sentry_logging, DjangoIntegration()])
-{% endif -%}
 {% endif %}
 # Your stuff...
 # ------------------------------------------------------------------------------
