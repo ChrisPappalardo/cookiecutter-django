@@ -28,7 +28,9 @@ django-crispy-forms==1.7.2  # https://github.com/django-crispy-forms/django-cris
 django-compressor==2.3  # https://github.com/django-compressor/django-compressor
 {%- endif %}
 django-redis==4.10.0  # https://github.com/niwinz/django-redis
+django-admin-interface==0.11.2
 django-countries==5.5
+django-extensions==2.2.1  # https://github.com/django-extensions/django-extensions
 django-recaptcha==2.0.2
 git+git://github.com/ChrisPappalardo/djcorecap.git@master#egg=djcorecap
 
