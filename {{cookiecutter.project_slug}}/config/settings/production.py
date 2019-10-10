@@ -156,23 +156,16 @@ SERVER_EMAIL = env("DJANGO_SERVER_EMAIL", default=DEFAULT_FROM_EMAIL)
 EMAIL_SUBJECT_PREFIX = env(
     "DJANGO_EMAIL_SUBJECT_PREFIX", default="[{{cookiecutter.project_name}}]"
 )
+EMAIL_HOST = env('DJANGO_EMAIL_HOST')
+EMAIL_HOST_USER = env('DJANGO_EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = env('DJANGO_EMAIL_HOST_PASSWORD')
+EMAIL_USE_TLS = env('DJANGO_EMAIL_USE_TLS', default=True)
+EMAIL_PORT = env('DJANGO_EMAIL_PORT', default=587)
 
 # ADMIN
 # ------------------------------------------------------------------------------
 # Django Admin URL regex.
 ADMIN_URL = env("DJANGO_ADMIN_URL")
-
-# Anymail (Mailgun)
-# ------------------------------------------------------------------------------
-# https://anymail.readthedocs.io/en/stable/installation/#installing-anymail
-INSTALLED_APPS += ["anymail"]  # noqa F405
-EMAIL_BACKEND = "anymail.backends.mailgun.EmailBackend"
-# https://anymail.readthedocs.io/en/stable/installation/#anymail-settings-reference
-ANYMAIL = {
-    "MAILGUN_API_KEY": env("MAILGUN_API_KEY"),
-    "MAILGUN_SENDER_DOMAIN": env("MAILGUN_DOMAIN"),
-    "MAILGUN_API_URL": env("MAILGUN_API_URL", default="https://api.mailgun.net/v3"),
-}
 
 {% if cookiecutter.use_whitenoise == 'y' -%}
 # WhiteNoise
@@ -215,7 +208,7 @@ LOGGING.update({
         },
     },
 })
-{% else %}
+{% else -%}
 # Simple warning logging to console
 LOGGING.update({
     "handlers": {
