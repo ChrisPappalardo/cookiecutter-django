@@ -219,5 +219,10 @@ sentry_sdk.init(
     ],
 )
 {% endif %}
+# Recaptcha
+# ------------------------------------------------------------------------------
+RECAPTCHA_PUBLIC_KEY = env("RECAPTCHA_PUBLIC_KEY")
+RECAPTCHA_PRIVATE_KEY = env("RECAPTCHA_PRIVATE_KEY")
+
 # Your stuff...
 # ------------------------------------------------------------------------------
