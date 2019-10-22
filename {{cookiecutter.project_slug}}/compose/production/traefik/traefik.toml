@@ -38,4 +38,4 @@ OnHostRule = true
     [frontends.django.headers]
       HostsProxyHeaders = ['X-CSRFToken']
     [frontends.django.routes.dr1]
-      rule = "Host:{{ cookiecutter.domain_name }}"
+      rule = "Host:{{ cookiecutter.project_name }}.{{ cookiecutter.domain_name }}"
