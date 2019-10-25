@@ -6,11 +6,27 @@ volumes:
   production_traefik: {}
 
 services:
-  django:{% if cookiecutter.use_celery == 'y' %} &django{% endif %}
+  django:
     build:
       context: .
       dockerfile: ./compose/production/django/Dockerfile
     image: {{ cookiecutter.project_slug }}_production_django
+    ports:
+      - "5000"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.django_insecure.rule=Host(`{{ cookiecutter.project_name }}.{{ cookiecutter.domain_name }}`)"
+      - "traefik.http.routers.django_insecure.entrypoints=web"
+      - "traefik.http.middlewares.https-redirect.redirectscheme.scheme=https"
+      - "traefik.http.routers.django_insecure.middlewares=https-redirect"
+      - "traefik.http.routers.django.rule=Host(`{{ cookiecutter.project_name }}.{{ cookiecutter.domain_name }}`)"
+      - "traefik.http.routers.django.entrypoints=web-secure"
+      - "traefik.http.routers.django.tls.certresolver=letsencrypt"
+      - "traefik.http.routers.admin.rule=PathPrefix(`${DJANGO_ADMIN_URL}`)"
+      - "traefik.http.routers.admin.entrypoints=web-secure"
+      - "traefik.http.routers.admin.tls.certresolver=letsencrypt"
+      - "traefik.http.middlewares.ipwl-admin.ipwhitelist.sourcerange=${DJANGO_ADMIN_IP_WHITELIST}"
+      - "traefik.http.routers.admin.middlewares=ipwl-admin"
     depends_on:
       - postgres
       - redis
@@ -39,26 +55,43 @@ services:
       - django
     volumes:
       - production_traefik:/etc/traefik/acme
+      - /var/run/docker.sock:/var/run/docker.sock
     ports:
-      - "0.0.0.0:80:80"
-      - "0.0.0.0:443:443"
+      - "80:80"
+      - "443:443"
+      - "8080:8080"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.api.rule=PathPrefix(`/api`) || PathPrefix(`/dashboard`)"
+      - "traefik.http.routers.api.service=api@internal"
+      - "traefik.http.routers.api.entrypoints=web-traefik-secure"
+      - "traefik.http.routers.api.tls.certresolver=letsencrypt"
+      - "traefik.http.routers.api.middlewares=ipwl-admin"
 
   redis:
     image: redis:5.0
   {%- if cookiecutter.use_celery == 'y' %}
 
-  celeryworker:
-    <<: *django
+  celeryworker: &celery
+    build:
+      context: .
+      dockerfile: ./compose/production/django/Dockerfile
     image: {{ cookiecutter.project_slug }}_production_celeryworker
+    depends_on:
+      - postgres
+      - redis
+    env_file:
+      - ./.envs/.production/.django
+      - ./.envs/.production/.postgres
     command: /start-celeryworker
 
   celerybeat:
-    <<: *django
+    <<: *celery
     image: {{ cookiecutter.project_slug }}_production_celerybeat
     command: /start-celerybeat
 
   flower:
-    <<: *django
+    <<: *celery
     image: {{ cookiecutter.project_slug }}_production_flower
     ports:
       - "5555:5555"
