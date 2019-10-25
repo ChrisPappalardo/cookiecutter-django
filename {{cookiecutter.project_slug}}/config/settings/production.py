@@ -177,8 +177,7 @@ INSTALLED_APPS = ["collectfast"] + INSTALLED_APPS  # noqa F405
 {% endif %}
 # LOGGING
 # ------------------------------------------------------------------------------
-{% if cookiecutter.use_sentry == 'n' -%}
-# Simple warning logging to console and error logging to email
+# Simple warning logging to console and critical logging to email
 LOGGING.update({
     "handlers": {
         "console": {
@@ -187,24 +186,14 @@ LOGGING.update({
             "formatter": "simple",
         },
         "mail_admins": {
-            "level": "ERROR",
+            "level": "CRITICAL",
             "class": "django.utils.log.AdminEmailHandler",
             "formatter": "verbose",
         },
     },
 })
-{% else -%}
-# Simple warning logging to console
-LOGGING.update({
-    "handlers": {
-        "console": {
-            "level": "WARNING",
-            "class": "logging.StreamHandler",
-            "formatter": "simple",
-        },
-    },
-})
 
+{% if cookiecutter.use_sentry == 'y' -%}
 # Sentry
 # ------------------------------------------------------------------------------
 SENTRY_DSN = env("SENTRY_DSN")
@@ -218,7 +207,8 @@ sentry_sdk.init(
         {% endif -%}
     ],
 )
-{% endif %}
+
+{% endif -%}
 # Recaptcha
 # ------------------------------------------------------------------------------
 RECAPTCHA_PUBLIC_KEY = env("RECAPTCHA_PUBLIC_KEY")
