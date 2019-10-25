@@ -239,7 +239,9 @@ def set_flags_in_envs(postgres_user, celery_flower_user, debug=False):
     production_postgres_envs_path = os.path.join(".envs", ".production", ".postgres")
 
     set_django_secret_key(production_django_envs_path)
-    set_django_admin_url(production_django_envs_path)
+    admin = set_django_admin_url(production_django_envs_path)
+    # inject admin URL into production.yml whitelist
+    set_flag("production.yml", "!!!SET DJANGO_ADMIN_URL!!!", value=admin)
 
     set_postgres_user(local_postgres_envs_path, value=postgres_user)
     set_postgres_password(

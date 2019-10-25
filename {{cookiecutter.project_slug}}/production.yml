@@ -22,10 +22,10 @@ services:
       - "traefik.http.routers.django.rule=Host(`{{ cookiecutter.project_name }}.{{ cookiecutter.domain_name }}`)"
       - "traefik.http.routers.django.entrypoints=web-secure"
       - "traefik.http.routers.django.tls.certresolver=letsencrypt"
-      - "traefik.http.routers.admin.rule=PathPrefix(`${DJANGO_ADMIN_URL}`)"
+      - "traefik.http.routers.admin.rule=PathPrefix(`/!!!SET DJANGO_ADMIN_URL!!!`)"
       - "traefik.http.routers.admin.entrypoints=web-secure"
       - "traefik.http.routers.admin.tls.certresolver=letsencrypt"
-      - "traefik.http.middlewares.ipwl-admin.ipwhitelist.sourcerange=${DJANGO_ADMIN_IP_WHITELIST}"
+      - "traefik.http.middlewares.ipwl-admin.ipwhitelist.sourcerange={{ cookiecutter.ipwhitelist_admin }}"
       - "traefik.http.routers.admin.middlewares=ipwl-admin"
     depends_on:
       - postgres

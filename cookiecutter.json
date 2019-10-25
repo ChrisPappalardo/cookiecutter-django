@@ -5,6 +5,7 @@
   "author_name": "Daniel Roy Greenfeld",
   "domain_name": "example.com",
   "email": "{{ cookiecutter.author_name.lower()|replace(' ', '-') }}@example.com",
+  "ipwhitelist_admin": "127.0.0.1/32",
   "version": "0.1.0",
   "open_source_license": [
     "MIT",
