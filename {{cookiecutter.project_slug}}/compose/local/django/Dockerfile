@@ -1,21 +1,32 @@
-FROM python:3.6-alpine
+FROM python:3.7
 
 ENV PYTHONUNBUFFERED 1
+ENV DEBIAN_FRONTEND noninteractive
+ENV TERM xterm
+ENV PYTHONPATH /app
+ENV GIT_SSL_NO_VERIFY=1
 
-RUN apk update \
-  # basic dependencies
-  && apk add bash curl git less man nano sudo wget \
-  # psycopg2 dependencies
-  && apk add --virtual build-deps gcc python3-dev musl-dev \
-  && apk add postgresql-dev \
-  # Pillow dependencies
-  && apk add jpeg-dev zlib-dev freetype-dev lcms2-dev openjpeg-dev tiff-dev tk-dev tcl-dev \
-  # CFFI dependencies
-  && apk add libffi-dev py-cffi \
-  # Translations dependencies
-  && apk add gettext \
-  # https://docs.djangoproject.com/en/dev/ref/django-admin/#dbshell
-  && apk add postgresql-client
+# update, upgrade, and install packages
+RUN apt-get update \
+    && apt-get upgrade -y \
+    && apt-get install -y apt-utils \
+    && apt-get install -y curl git less man nano sudo wget \
+    && apt-get install -y build-essential \
+    && apt-get install -y libffi-dev gettext \
+    && apt-get install -y postgresql-client
+
+# configure apt-utils (fixes warnings)
+RUN dpkg-reconfigure apt-utils
+
+# set some useful defaults
+RUN echo "alias ls='ls --color'" >> /etc/bash.bashrc
+RUN echo "alias grep='grep --color=auto'" >> /etc/bash.bashrc
+
+# update pip
+RUN pip install --upgrade pip
+
+# install ipython
+RUN pip install ipython
 
 # Requirements are installed here to ensure they will be cached.
 COPY ./requirements /requirements
@@ -28,19 +39,7 @@ RUN chmod +x /entrypoint
 COPY ./compose/local/django/start /start
 RUN sed -i 's/\r$//g' /start
 RUN chmod +x /start
-{% if cookiecutter.use_celery == "y" %}
-COPY ./compose/local/django/celery/worker/start /start-celeryworker
-RUN sed -i 's/\r$//g' /start-celeryworker
-RUN chmod +x /start-celeryworker
 
-COPY ./compose/local/django/celery/beat/start /start-celerybeat
-RUN sed -i 's/\r$//g' /start-celerybeat
-RUN chmod +x /start-celerybeat
-
-COPY ./compose/local/django/celery/flower/start /start-flower
-RUN sed -i 's/\r$//g' /start-flower
-RUN chmod +x /start-flower
-{% endif %}
 WORKDIR /app
 
 ENTRYPOINT ["/entrypoint"]

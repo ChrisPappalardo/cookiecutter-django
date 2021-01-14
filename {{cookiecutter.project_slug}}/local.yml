@@ -3,18 +3,21 @@ version: '3'
 volumes:
   local_postgres_data: {}
   local_postgres_data_backups: {}
+  local_redis_data: {}
 
 services:
   django:{% if cookiecutter.use_celery == 'y' %} &django{% endif %}
     build:
       context: .
       dockerfile: ./compose/local/django/Dockerfile
-    image: {{ cookiecutter.project_slug }}_local_django
+    image: {{ cookiecutter.project_slug }}/django:local
     depends_on:
       - postgres
       {%- if cookiecutter.use_mailhog == 'y' %}
       - mailhog
       {%- endif %}
+      - redis
+      - sass
     volumes:
       - .:/app
     env_file:
@@ -28,7 +31,7 @@ services:
     build:
       context: .
       dockerfile: ./compose/production/postgres/Dockerfile
-    image: {{ cookiecutter.project_slug }}_production_postgres
+    image: {{ cookiecutter.project_slug }}/postgres
     volumes:
       - local_postgres_data:/var/lib/postgresql/data
       - local_postgres_data_backups:/backups
@@ -37,14 +40,28 @@ services:
   {%- if cookiecutter.use_mailhog == 'y' %}
 
   mailhog:
-    image: mailhog/mailhog:v1.0.0
+    image: mailhog/mailhog:v1.0.1
     ports:
       - "8025:8025"
 
   {%- endif %}
 
   redis:
-    image: redis:5.0
+    image: redis:6.0.10
+    volumes:
+      - local_redis_data:/data
+    ports:
+      - "6379:6379"
+
+  sass:
+    build:
+      context: .
+      dockerfile: ./compose/local/sass/Dockerfile
+    image: {{ cookiecutter.project_slug }}/sass:local
+    volumes:
+      - ./{{ cookiecutter.project_slug }}/static:/static
+      - ./staticfiles:/staticfiles
+    command: sass --watch /static/sass:/static/css --sourcemap=none --scss
 
   {%- if cookiecutter.use_celery == 'y' %}
 
@@ -100,3 +117,4 @@ services:
       - "3001:3001"
 
   {%- endif %}
+
