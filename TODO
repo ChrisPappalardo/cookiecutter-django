@@ -1,8 +1,8 @@
-Changes to incorporate:
-* Update config settings
-* Update standard package requirements
-* Pen test remediations
-* Docker environments
-* Proxy server and config (optional)
-* Replace allauth (optional)
+TODO
+====
 
+* Update docker environments
+* Update custom user models and views
+* Update base templates and add 3-col style
+* Add ECS deployment scripts and integrate into cc config
+* Add base unit tests (optional)
