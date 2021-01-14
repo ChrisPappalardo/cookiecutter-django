@@ -1,39 +1,40 @@
-pytz==2019.2  # https://github.com/stub42/pytz
-python-slugify==3.0.4  # https://github.com/un33k/python-slugify
-Pillow==6.1.0  # https://github.com/python-pillow/Pillow
-{%- if cookiecutter.use_compressor == "y" %}
-rcssmin==1.0.6{% if cookiecutter.windows == 'y' and cookiecutter.use_docker == 'n' %} --install-option="--without-c-extensions"{% endif %}  # https://github.com/ndparker/rcssmin
-{%- endif %}
-argon2-cffi==19.1.0  # https://github.com/hynek/argon2_cffi
-{%- if cookiecutter.use_whitenoise == 'y' %}
-whitenoise==4.1.4  # https://github.com/evansd/whitenoise
-{%- endif %}
-redis==3.3.8  # https://github.com/antirez/redis
+argon2-cffi==20.1.0
 {%- if cookiecutter.use_celery == "y" %}
-celery==4.3.0  # pyup: < 5.0  # https://github.com/celery/celery
-django-celery-beat==1.5.0  # https://github.com/celery/django-celery-beat
+celery==5.0.5
 {%- if cookiecutter.use_docker == 'y' %}
-flower==0.9.3  # https://github.com/mher/flower
+flower==0.9.7
 {%- endif %}
+{%- endif %}
+Pillow==8.1.0
+pip>=20.3.3
+psycopg2-binary==2.8.6
+python-slugify==4.0.1
+pytz==2020.5
+{%- if cookiecutter.use_compressor == "y" %}
+rcssmin==1.0.6{% if cookiecutter.windows == 'y' and cookiecutter.use_docker == 'n' %} --install-option="--without-c-extensions"{% endif %}
+{%- endif %}
+redis==3.5.3
+{%- if cookiecutter.use_whitenoise == 'y' %}
+whitenoise==5.2.0
 {%- endif %}
 
 # Django
 # ------------------------------------------------------------------------------
-django==2.2.6  # pyup: < 3.0  # https://www.djangoproject.com/
-django-environ==0.4.5  # https://github.com/joke2k/django-environ
-django-model-utils==3.2.0  # https://github.com/jazzband/django-model-utils
-django-allauth==0.40.0  # https://github.com/pennersr/django-allauth
-django-crispy-forms==1.7.2  # https://github.com/django-crispy-forms/django-crispy-forms
+django==3.1.5
+django-admin-interface==0.14.2
+django-allauth==0.44.0
 {%- if cookiecutter.use_compressor == "y" %}
-django-compressor==2.3  # https://github.com/django-compressor/django-compressor
+django-compressor==2.4
 {%- endif %}
-django-redis==4.10.0  # https://github.com/niwinz/django-redis
-django-admin-interface==0.11.2
-django-countries==5.5
-django-extensions==2.2.1  # https://github.com/django-extensions/django-extensions
-django-recaptcha==2.0.2
+django-countries==7.0
+django-crispy-forms==1.10.0
+django-environ==0.4.5
+django-extensions==3.1.0
+django-model-utils==4.1.1
+django-redis==4.12.1
+django-recaptcha==2.0.6
 git+git://github.com/ChrisPappalardo/djcorecap.git@master#egg=djcorecap
 
 # Django REST Framework
-djangorestframework==3.10.3  # https://github.com/encode/django-rest-framework
-coreapi==2.3.3  # https://github.com/core-api/python-client
+coreapi==2.3.3
+djangorestframework==3.12.2

@@ -20,6 +20,7 @@ ALLOWED_HOSTS = env.list("DJANGO_ALLOWED_HOSTS", default=["{{ cookiecutter.domai
 DATABASES["default"] = env.db("DATABASE_URL")  # noqa F405
 DATABASES["default"]["ATOMIC_REQUESTS"] = True  # noqa F405
 DATABASES["default"]["CONN_MAX_AGE"] = env.int("CONN_MAX_AGE", default=60)  # noqa F405
+DATABASES["default"]["OPTIONS"] = {"sslmode": "require"}
 
 # SECURITY
 # ------------------------------------------------------------------------------
@@ -131,15 +132,13 @@ TEMPLATES[0]["OPTIONS"]["loaders"] = [  # noqa F405
 
 # EMAIL
 # ------------------------------------------------------------------------------
-# https://docs.djangoproject.com/en/dev/ref/settings/#default-from-email
-DEFAULT_FROM_EMAIL = env(
-    "DJANGO_DEFAULT_FROM_EMAIL", default="{{cookiecutter.project_name}} <noreply@{{cookiecutter.domain_name}}>"
-)
 # https://docs.djangoproject.com/en/dev/ref/settings/#server-email
-SERVER_EMAIL = env("DJANGO_SERVER_EMAIL", default=DEFAULT_FROM_EMAIL)
+SERVER_EMAIL = env(
+    "DJANGO_SERVER_EMAIL", default=DEFAULT_FROM_EMAIL,
+)
 # https://docs.djangoproject.com/en/dev/ref/settings/#email-subject-prefix
 EMAIL_SUBJECT_PREFIX = env(
-    "DJANGO_EMAIL_SUBJECT_PREFIX", default="[{{cookiecutter.project_name}}]"
+    "DJANGO_EMAIL_SUBJECT_PREFIX", default="[Django] "
 )
 EMAIL_HOST = env('DJANGO_EMAIL_HOST')
 EMAIL_HOST_USER = env('DJANGO_EMAIL_HOST_USER')
@@ -177,21 +176,8 @@ INSTALLED_APPS = ["collectfast"] + INSTALLED_APPS  # noqa F405
 {% endif %}
 # LOGGING
 # ------------------------------------------------------------------------------
-# Simple warning logging to console and critical logging to email
-LOGGING.update({
-    "handlers": {
-        "console": {
-            "level": "WARNING",
-            "class": "logging.StreamHandler",
-            "formatter": "simple",
-        },
-        "mail_admins": {
-            "level": "CRITICAL",
-            "class": "django.utils.log.AdminEmailHandler",
-            "formatter": "verbose",
-        },
-    },
-})
+# Remove debug requirement from console handler
+del LOGGING["handlers"]["console"]["filters"]
 
 {% if cookiecutter.use_sentry == 'y' -%}
 # Sentry

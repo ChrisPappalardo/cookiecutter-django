@@ -122,7 +122,7 @@ AUTHENTICATION_BACKENDS = [
     "allauth.account.auth_backends.AuthenticationBackend",
 ]
 # https://docs.djangoproject.com/en/dev/ref/settings/#login-redirect-url
-LOGIN_REDIRECT_URL = "users:redirect"
+LOGIN_REDIRECT_URL = "users:detail"
 # https://docs.djangoproject.com/en/dev/ref/settings/#login-url
 LOGIN_URL = "account_login"
 
@@ -138,9 +138,7 @@ PASSWORD_HASHERS = [
 ]
 # https://docs.djangoproject.com/en/dev/ref/settings/#auth-password-validators
 AUTH_PASSWORD_VALIDATORS = [
-    {
-        "NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator"
-    },
+    {"NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator"},
     {"NAME": "django.contrib.auth.password_validation.MinimumLengthValidator"},
     {"NAME": "django.contrib.auth.password_validation.CommonPasswordValidator"},
     {"NAME": "django.contrib.auth.password_validation.NumericPasswordValidator"},
@@ -242,13 +240,19 @@ EMAIL_BACKEND = env(
 )
 # https://docs.djangoproject.com/en/2.2/ref/settings/#email-timeout
 EMAIL_TIMEOUT = 5
+DEFAULT_FROM_EMAIL = env(
+    'DJANGO_FROM_EMAIL',
+    default='{{ cookiecutter.project_name }} <noreply@{{ cookiecutter.project_slug }}.{{ cookiecutter.domain_name }}>',
+)
 
 # ADMIN
 # ------------------------------------------------------------------------------
 # Django Admin URL.
 ADMIN_URL = "admin/"
 # https://docs.djangoproject.com/en/dev/ref/settings/#admins
-ADMINS = [("""{{cookiecutter.author_name}}""", "{{cookiecutter.email}}")]
+ADMINS = [
+    ("{{ cookiecutter.author_name }}", "{{ cookiecutter.email }}"),
+]
 # https://docs.djangoproject.com/en/dev/ref/settings/#managers
 MANAGERS = ADMINS
 
@@ -259,17 +263,22 @@ MANAGERS = ADMINS
 # more details on how to customize your logging configuration.
 # Base logging config that is updated with specifics by each environment
 LOGGING = {
-    "version": 1,
-    "disable_existing_loggers": False,
-    "filters": {
-        "require_debug_false": {
-            "()": "django.utils.log.RequireDebugFalse",
+    'version': 1,
+    'disable_existing_loggers': False,
+    'filters': {
+        'require_debug_false': {
+            '()': 'django.utils.log.RequireDebugFalse',
         },
-        "require_debug_true": {
-            "()": "django.utils.log.RequireDebugTrue",
+        'require_debug_true': {
+            '()': 'django.utils.log.RequireDebugTrue',
         },
     },
-    "formatters": {
+    'formatters': {
+        'django.server': {
+            '()': 'django.utils.log.ServerFormatter',
+            'format': '[{server_time}] {message}',
+            'style': '{',
+        },
         "simple": {
             "format": "%(levelname)s %(asctime)s %(message)s",
         },
@@ -278,22 +287,42 @@ LOGGING = {
                       "%(process)d %(thread)d %(message)s",
         },
     },
-    "loggers": {
-        "django": {
-            "handlers": ["console", "mail_admins"],
-            "level": "INFO",
-            "propogate": True,
+    'handlers': {
+        'console': {
+            'level': 'INFO',
+            'filters': ['require_debug_true'],
+            'class': 'logging.StreamHandler',
+            'formatter': 'simple',
         },
-        "django.request": {
-            "handlers": ["mail_admins"],
-            "level": "INFO",
-            "propagate": True
+        'django.server': {
+            'level': 'INFO',
+            'class': 'logging.StreamHandler',
+            'formatter': 'django.server',
         },
+        'mail_admins': {
+            'level': 'ERROR',
+            'filters': ['require_debug_false'],
+            'class': 'django.utils.log.AdminEmailHandler',
+            'formatter': 'verbose',
+        },
+    },
+    'loggers': {
+        'django': {
+            'handlers': ['console', 'mail_admins'],
+            'level': 'INFO',
+        },
+        'django.server': {
+            'handlers': ['django.server'],
+            'level': 'INFO',
+            'propagate': False,
+        },
+        # ensure disallowed host INFO messages are emailed
         "django.security.DisallowedHost": {
-            "level": "INFO",
             "handlers": ["mail_admins"],
-            "propagate": True
-        }
+            "level": "INFO",
+            "formatter": "simple",
+            "propagate": True,
+        },
     },
 }
 
@@ -325,22 +354,20 @@ CELERY_BEAT_SCHEDULER = "django_celery_beat.schedulers:DatabaseScheduler"
 {%- endif %}
 # django-allauth
 # ------------------------------------------------------------------------------
-ACCOUNT_ALLOW_REGISTRATION = env.bool("DJANGO_ACCOUNT_ALLOW_REGISTRATION", True)
-# https://django-allauth.readthedocs.io/en/latest/configuration.html
-ACCOUNT_AUTHENTICATION_METHOD = "username"
-# https://django-allauth.readthedocs.io/en/latest/configuration.html
-ACCOUNT_EMAIL_REQUIRED = True
-# https://django-allauth.readthedocs.io/en/latest/configuration.html
-ACCOUNT_EMAIL_VERIFICATION = "mandatory"
 # https://django-allauth.readthedocs.io/en/latest/configuration.html
 ACCOUNT_ADAPTER = "{{cookiecutter.project_slug}}.users.adapters.AccountAdapter"
-# https://django-allauth.readthedocs.io/en/latest/configuration.html
 SOCIALACCOUNT_ADAPTER = "{{cookiecutter.project_slug}}.users.adapters.SocialAccountAdapter"
-# https://django-allauth.readthedocs.io/en/latest/forms.html#reset-password-allauth-account-forms-resetpasswordform
 ACCOUNT_FORMS = {
     "reset_password": "{{ cookiecutter.project_slug }}.users.forms.ResetPasswordForm",
     "signup": "{{ cookiecutter.project_slug }}.users.forms.UserSignupForm",
 }
+ACCOUNT_ALLOW_REGISTRATION = env.bool("DJANGO_ACCOUNT_ALLOW_REGISTRATION", True)
+ACCOUNT_AUTHENTICATION_METHOD = "email"
+ACCOUNT_EMAIL_REQUIRED = True
+ACCOUNT_EMAIL_SUBJECT_PREFIX = ""
+ACCOUNT_EMAIL_VERIFICATION = "mandatory"
+ACCOUNT_MAX_EMAIL_ADDRESSES = 1
+ACCOUNT_PRESERVE_USERNAME_CASING = False
 
 {% if cookiecutter.use_compressor == 'y' -%}
 # django-compressor
