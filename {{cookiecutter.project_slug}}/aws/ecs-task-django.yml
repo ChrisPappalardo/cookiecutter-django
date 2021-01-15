@@ -1,0 +1,66 @@
+family: '{{ cookiecutter.project_slug }}-django'
+executionRoleArn: 'arn:aws:iam::{{ cookiecutter.aws_account_id }}:role/ecsTaskExecutionRole'
+networkMode: 'awsvpc'
+requiresCompatibilities:
+- FARGATE
+cpu: '2048'
+memory: '4096'
+
+containerDefinitions:
+- name: 'django'
+  image: '{{ cookiecutter.aws_account_id }}.dkr.ecr.{{ cookiecutter.aws_region }}.amazonaws.com/{{ cookiecutter.project_slug }}/django'
+  portMappings:
+  - containerPort: 5000
+    hostPort: 5000
+    protocol: tcp
+  command:
+  - '/start'
+  environment:
+  - name: 'DJANGO_SETTINGS_MODULE'
+    value: 'config.settings.production'
+  - name: 'DJANGO_SECRET_KEY'
+    value: '!!!SET DJANGO_SECRET_KEY!!!'
+  - name: 'DJANGO_ADMIN_URL'
+    value: '!!!SET DJANGO_ADMIN_URL!!!'
+  - name: 'DJANGO_ALLOWED_HOSTS'
+    value: '.{{ cookiecutter.domain_name }}'
+  - name: 'DJANGO_SECURE_SSL_REDIRECT'
+    value: 'False'
+  - name: 'DJANGO_EMAIL_HOST'
+    value: 'SET-ME'
+  - name: 'DJANGO_EMAIL_HOST_USER'
+    value: 'SET-ME'
+  - name: 'DJANGO_EMAIL_HOST_PASSWORD'
+    value: 'SET-ME'
+  - name: 'DJANGO_EMAIL_SUBJECT_PREFIX'
+    value: 'SET-ME'
+  - name: 'DJANGO_EMAIL_USE_TLS'
+    value: 'True'
+  - name: 'DJANGO_EMAIL_PORT'
+    value: '587'
+  - name: 'WEB_CONCURRENCY'
+    value: '4'
+  - name: 'SENTRY_DSN'
+    value: 'SET-ME'
+  - name: 'REDIS_URL'
+    value: 'redis://{{ cookiecutter.project_slug }}-redis.{{ cookiecutter.project_slug }}:6379/0'
+  - name: 'RECAPTCHA_PUBLIC_KEY'
+    value: 'SET-ME'
+  - name: 'RECAPTCHA_PRIVATE_KEY'
+    value: 'SET-ME'
+  - name: 'POSTGRES_HOST'
+    value: 'db.{{ cookeicutter.project_slug }}.{{ cookiecutter.domain_name }}'
+  - name: 'POSTGRES_PORT'
+    value: '5432'
+  - name: 'POSTGRES_DB'
+    value: '{{ cookiecutter.project_slug }}'
+  - name: 'POSTGRES_USER'
+    value: '!!!SET POSTGRES_USER!!!'
+  - name: 'POSTGRES_PASSWORD'
+    value: '!!!SET POSTGRES_PASSWORD!!!'
+  logConfiguration:
+    logDriver: awslogs
+    options:
+      awslogs-group: '{{ cookiecutter.project_slug }}'
+      awslogs-region: '{{ cookiecutter.aws_region }}'
+      awslogs-stream-prefix: 'ecs'

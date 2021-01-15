@@ -1,0 +1,36 @@
+#!/usr/bin/env bash
+
+set -o errexit
+set -o pipefail
+set -o nounset
+
+
+echo "Registering task definitions..."
+
+aws ecs --region {{ cookiecutter.aws_region }} \
+    register-task-definition --cli-input-yaml file://aws/ecs-task-django.yml \
+    > /dev/null
+aws ecs --region {{ cookiecutter.aws_region }} \
+    register-task-definition --cli-input-yaml file://aws/ecs-task-redis.yml \
+    > /dev/null
+
+
+echo "Creating redis service..."
+
+aws ecs --region {{ cookiecutter.aws_region }} \
+    create-service --cli-input-yaml file://aws/ecs-service-redis.yml \
+    > /dev/null
+
+
+echo "Waiting for redis service to come online..."
+sleep 60
+
+
+echo "Creating other services..."
+
+aws ecs --region {{ cookiecutter.aws_region }} \
+    create-service --cli-input-yaml file://aws/ecs-service-django.yml \
+    > /dev/null
+
+
+echo "Done!"

@@ -3,23 +3,33 @@ version: '3'
 volumes:
   production_postgres_data: {}
   production_postgres_data_backups: {}
-  production_traefik: {}
+  production_redis_data: {}
+  production_traefik_data: {}
 
 services:
+  awscli:
+    build:
+      context: .
+      dockerfile: ./compose/production/aws/Dockerfile
+    env_file:
+      - ./.envs/.production/.django
+    volumes:
+      - production_postgres_data_backups:/backups
+
   django:
     build:
       context: .
       dockerfile: ./compose/production/django/Dockerfile
-    image: {{ cookiecutter.project_slug }}_production_django
+    image: {{ cookiecutter.project_slug }}/django
     ports:
       - "5000"
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.django_insecure.rule=Host(`{{ cookiecutter.project_name }}.{{ cookiecutter.domain_name }}`)"
+      - "traefik.http.routers.django_insecure.rule=Host(`{{ cookiecutter.project_slug }}.{{ cookiecutter.domain_name }}`)"
       - "traefik.http.routers.django_insecure.entrypoints=web"
       - "traefik.http.middlewares.https-redirect.redirectscheme.scheme=https"
       - "traefik.http.routers.django_insecure.middlewares=https-redirect"
-      - "traefik.http.routers.django.rule=Host(`{{ cookiecutter.project_name }}.{{ cookiecutter.domain_name }}`)"
+      - "traefik.http.routers.django.rule=Host(`{{ cookiecutter.project_slug }}.{{ cookiecutter.domain_name }}`)"
       - "traefik.http.routers.django.entrypoints=web-secure"
       - "traefik.http.routers.django.tls.certresolver=letsencrypt"
       - "traefik.http.routers.admin.rule=PathPrefix(`/!!!SET DJANGO_ADMIN_URL!!!`)"
@@ -39,22 +49,34 @@ services:
     build:
       context: .
       dockerfile: ./compose/production/postgres/Dockerfile
-    image: {{ cookiecutter.project_slug }}_production_postgres
+    image: {{ cookiecutter.project_slug }}/postgres
     volumes:
       - production_postgres_data:/var/lib/postgresql/data
       - production_postgres_data_backups:/backups
     env_file:
       - ./.envs/.production/.postgres
 
+  redis:
+    build:
+      context: .
+      dockerfile: ./compose/production/redis/Dockerfile
+      args:
+        - from=redis:6.0.10
+    image: {{ cookiecutter.project_slug }}/redis
+    volumes:
+      - production_redis_data:/data
+    ports:
+      - "6379:6379"
+
   traefik:
     build:
       context: .
       dockerfile: ./compose/production/traefik/Dockerfile
-    image: {{ cookiecutter.project_slug }}_production_traefik
+    image: {{ cookiecutter.project_slug }}/traefik
     depends_on:
       - django
     volumes:
-      - production_traefik:/etc/traefik/acme
+      - production_traefik_data:/etc/traefik/acme
       - /var/run/docker.sock:/var/run/docker.sock
     ports:
       - "80:80"
@@ -68,8 +90,6 @@ services:
       - "traefik.http.routers.api.tls.certresolver=letsencrypt"
       - "traefik.http.routers.api.middlewares=ipwl-admin"
 
-  redis:
-    image: redis:5.0
   {%- if cookiecutter.use_celery == 'y' %}
 
   celeryworker: &celery
@@ -98,11 +118,3 @@ services:
     command: /start-flower
 
   {%- endif %}
-  awscli:
-    build:
-      context: .
-      dockerfile: ./compose/production/aws/Dockerfile
-    env_file:
-      - ./.envs/.production/.django
-    volumes:
-      - production_postgres_data_backups:/backups

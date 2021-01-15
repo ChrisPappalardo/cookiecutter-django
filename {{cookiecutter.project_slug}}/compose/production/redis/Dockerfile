@@ -1,0 +1,2 @@
+ARG from
+FROM ${from}

@@ -1,0 +1,16 @@
+#!/usr/bin/env bash
+
+set -o errexit
+set -o pipefail
+set -o nounset
+
+# delete services
+
+echo "Deleting services..."
+
+aws ecs --region {{ cookiecutter.aws_region }} \
+    delete-service --cluster {{ cookiecutter.project_slug }} --service django --force > /dev/null
+aws ecs --region {{ cookiecutter.aws_region }} \
+    delete-service --cluster {{ cookiecutter.project_slug }} --service redis --force > /dev/null
+
+echo "Done!"

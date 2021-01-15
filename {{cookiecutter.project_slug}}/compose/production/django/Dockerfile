@@ -9,23 +9,38 @@ RUN npm run build
 
 # Python build stage
 {%- endif %}
-FROM python:3.6-alpine
+FROM python:3.7
 
 ENV PYTHONUNBUFFERED 1
+ENV DEBIAN_FRONTEND noninteractive
+ENV TERM xterm
+ENV PYTHONPATH /app
+ENV GIT_SSL_NO_VERIFY=1
 
-RUN apk update \
-  # basic dependencies
-  && apk add bash curl git less man nano sudo wget \
-  # psycopg2 dependencies
-  && apk add --virtual build-deps gcc python3-dev musl-dev \
-  && apk add postgresql-dev \
-  # Pillow dependencies
-  && apk add jpeg-dev zlib-dev freetype-dev lcms2-dev openjpeg-dev tiff-dev tk-dev tcl-dev \
-  # CFFI dependencies
-  && apk add libffi-dev py-cffi
+# update, upgrade, and install packages
+RUN apt-get update \
+    && apt-get upgrade -y \
+    && apt-get install -y apt-utils \
+    && apt-get install -y curl git less man nano sudo wget \
+    && apt-get install -y build-essential \
+    && apt-get install -y libffi-dev gettext \
+    && apt-get install -y postgresql-client
 
-RUN addgroup -S django \
-    && adduser -S -G django django
+# configure apt-utils (fixes warnings)
+RUN dpkg-reconfigure apt-utils
+
+# set some useful defaults
+RUN echo "alias ls='ls --color'" >> /etc/bash.bashrc
+RUN echo "alias grep='grep --color=auto'" >> /etc/bash.bashrc
+
+# get the latest AWS RDS CA for SSL connections
+RUN wget https://s3.amazonaws.com/rds-downloads/rds-combined-ca-bundle.pem -O /rds.pem
+
+# update pip
+RUN pip install --upgrade pip
+
+# install ipython
+RUN pip install ipython
 
 # Requirements are installed here to ensure they will be cached.
 COPY ./requirements /requirements
@@ -63,6 +78,9 @@ COPY --from=client-builder /app /app
 {% else %}
 COPY . /app
 {%- endif %}
+
+RUN addgroup --system django \
+    && adduser --system --ingroup django django
 
 RUN chown -R django /app
 

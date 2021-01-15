@@ -215,6 +215,10 @@ For local development, see the following:
 * `Developing locally`_
 * `Developing locally using docker`_
 
+For AWS ECS deployment, replace all SET-ME strings with credentials:
+
+    $ grep -PRni "SET-ME"
+
 .. _options: http://cookiecutter-django.readthedocs.io/en/latest/project-generation-options.html
 .. _`Developing locally`: http://cookiecutter-django.readthedocs.io/en/latest/developing-locally.html
 .. _`Developing locally using docker`: http://cookiecutter-django.readthedocs.io/en/latest/developing-locally-docker.html

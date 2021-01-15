@@ -47,7 +47,12 @@ services:
   {%- endif %}
 
   redis:
-    image: redis:6.0.10
+    build:
+      context: .
+      dockerfile: ./compose/production/redis/Dockerfile
+      args:
+        - from=redis:6.0.10
+    image: {{ cookiecutter.project_slug }}/redis
     volumes:
       - local_redis_data:/data
     ports:

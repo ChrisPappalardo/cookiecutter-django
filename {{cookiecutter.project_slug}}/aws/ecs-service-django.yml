@@ -1,0 +1,21 @@
+cluster: '{{ cookiecutter.project_slug }}'
+serviceName: 'django'
+taskDefinition: '{{ cookiecutter.project_slug }}-django'
+
+loadBalancers:
+- targetGroupArn: 'arn:aws:elasticloadbalancing:{{ cookiecutter.aws_region }}:{{ cookiecutter.aws_account_id }}:targetgroup/{{ cookiecutter.project_slug }}-django/{{ cookiecutter.aws_web_target_group_id }}'
+  containerName: 'django'
+  containerPort: 5000
+
+desiredCount: 2
+launchType: 'FARGATE'
+platformVersion: '1.4.0'
+
+networkConfiguration:
+  awsvpcConfiguration:
+    subnets:
+    - 'subnet-{{ cookiecutter.aws_vpc_subnet_1 }}'
+    - 'subnet-{{ cookiecutter.aws_vpc_subnet_2 }}'
+    securityGroups:
+    - 'sg-{{ cookiecutter.aws_vpc_sg_id }}'
+    assignPublicIp: ENABLED

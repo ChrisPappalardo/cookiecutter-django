@@ -34,6 +34,13 @@
     "GCP",
     "None"
   ],
+  "aws_account_id": "123456789012",
+  "aws_region": "us-east-1",
+  "aws_web_target_group_id": "123456789abcdefg",
+  "aws_vpc_subnet_1": "123456789abcd3fgh",
+  "aws_vpc_subnet_2": "123456789abcd3fgh",
+  "aws_vpc_sg_id": "sg-1234567890abcdefgh",
+  "aws_vpc_sd_id": "srv-1234567890abcdefg",
   "custom_bootstrap_compilation": "n",
   "use_compressor": "n",
   "use_celery": "n",

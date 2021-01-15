@@ -1,0 +1,31 @@
+version: '3'
+
+volumes:
+  production_redis_data: {}
+
+services:
+  django:
+    build:
+      context: .
+      dockerfile: ./compose/production/django/Dockerfile
+    image: {{ cookiecutter.aws_account_id }}.dkr.ecr.{{ cookiecutter.aws_region }}.amazonaws.com/{{ cookiecutter.project_slug }}/django
+    depends_on:
+      - redis
+    env_file:
+      - ./.envs/.production/.django
+      - ./.envs/.production/.postgres
+    ports:
+      - "5000:5000"
+    command: /start
+
+  redis:
+    build:
+      context: .
+      dockerfile: ./compose/production/redis/Dockerfile
+      args:
+        - from=redis:6.0.10
+    image: {{ cookiecutter.aws_account_id }}.dkr.ecr.{{ cookiecutter.aws_region }}.amazonaws.com/{{ cookiecutter.project_slug }}/redis
+    volumes:
+      - production_redis_data:/data
+    ports:
+      - "6379:6379"

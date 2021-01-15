@@ -278,6 +278,11 @@ Session.vim
 tags
 
 
+### AWS scripts
+# WARNING: removing this line will result in plain-text credentials being added to your repo!
+{{ cookiecutter.project_slug }}/aws/*
+
+
 ### Project template
 /.env
 /.envs/

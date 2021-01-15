@@ -1,0 +1,19 @@
+cluster: '{{ cookiecutter.project_slug }}'
+serviceName: 'redis'
+taskDefinition: '{{ cookiecutter.project_slug }}-redis'
+
+serviceRegistries:
+- registryArn: 'arn:aws:servicediscovery:{{ cookiecutter.aws_region }}:{{ cookiecutter.aws_account_id }}:service/{{ cookiecutter.aws_vpc_sd_id }}'
+
+desiredCount: 1
+launchType: 'FARGATE'
+platformVersion: '1.4.0'
+
+networkConfiguration:
+  awsvpcConfiguration:
+    subnets:
+    - 'subnet-{{ cookiecutter.aws_vpc_subnet_1 }}'
+    - 'subnet-{{ cookiecutter.aws_vpc_subnet_2 }}'
+    securityGroups:
+    - 'sg-{{ cookiecutter.aws_vpc_sg_id }}'
+    assignPublicIp: ENABLED
