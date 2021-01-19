@@ -49,7 +49,7 @@
   "use_whitenoise": "n",
   "use_heroku": "n",
   "use_travisci": "n",
+  "use_three_column_template": "n",
   "keep_local_envs_in_vcs": "y",
-
   "debug": "n"
 }

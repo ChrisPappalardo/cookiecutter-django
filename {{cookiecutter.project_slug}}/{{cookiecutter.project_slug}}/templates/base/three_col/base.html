@@ -1,0 +1,197 @@
+{% extends "djcorecap/base.html" %}
+
+{% load djcorecap static i18n %}
+
+{% block description %}
+Centralized model, processing, and data hub for Alvarez and Marsal applications.
+{% endblock description %}
+
+{% block author %}
+Chris Pappalardo cpappalardo@alvarezandmarsal.com
+{% endblock author %}
+
+{% block title %}
+A&M Hub
+{% endblock title %}
+
+{% block external_css %}
+<!-- Latest compiled and minified Bootstrap -->
+<link rel="stylesheet"
+  href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+  integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z"
+  crossorigin="anonymous">
+<link rel="stylesheet"
+  href="https://use.fontawesome.com/releases/v5.14.0/css/all.css"
+  crossorigin="anonymous">
+<link rel="stylesheet"
+  href="https://fonts.googleapis.com/css?family=Noto+Sans">
+{% endblock external_css %}
+
+{% block project_css %}
+<link rel="stylesheet"
+  href="{% static 'css/custom_bootstrap_vars.css' %}">
+{{ block.super }}
+{% endblock project_css %}
+
+{% block brand %}
+A&M Hub
+{% endblock brand %}
+
+{% block navbar %}
+<div class="{% block navbar_container %}container bg-white{% endblock navbar_container %}">
+  <div class="row justify-content-center">
+    <div class="col">
+      <section id="navbar">
+        <nav class="navbar navbar-expand-lg navbar-light">
+          <div class="col-12 col-md-6">
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+              aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+              <span class="navbar-toggler-icon"></span>
+            </button>
+            <a class="navbar-brand d-none d-lg-block text-secondary"
+              href="{% block brand_url %}{% url 'home' %}{% endblock brand_url %}">
+              <img class="d-inline-block align-top" src="{% static 'images/A&M_hub_logo.png' %}" height="50" alt="">
+            </a>
+          </div>
+          <div class="col-6 navbar-shim">
+            <div class="collapse navbar-collapse justify-content-end" id="navbarSupportedContent">
+              <ul class="navbar-nav">
+                {% if request.user.is_authenticated %}
+                <li class="nav-item">
+                  <a class="nav-link {% active_url 'data/' %}" href="{% url 'data:database_list' %}">
+                    <i class="fas fa-database" data-toggle="tooltip" title="Data"></i>
+                  </a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link {% active_url 'files/' %}" href="{% url 'files:list' %}">
+                    <i class="fas fa-folder-open" data-toggle="tooltip" title="Files"></i>
+                  </a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link {% active_url 'automation/' %}" href="{% url 'automation:pipeline_list' %}">
+                    <i class="fas fa-code-branch" data-toggle="tooltip" title="Automation"></i>
+                  </a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link {% active_url 'help/' %}" href="{% url 'help' %}">
+                    <i class="fas fa-question-circle" data-toggle="tooltip" title="Help"></i>
+                  </a>
+                </li>
+                {% if request.user.is_staff %}
+                <li class="nav-item">
+                  <a class="nav-link" href="{% url 'admin:index' %}">
+                    <i class="fas fa-cogs" data-toggle="tooltip" title="Admin"></i>
+                  </a>
+                </li>
+                {% endif %}
+                <li class="nav-item">
+                  {# URL provided by django-allauth/account/urls.py #}
+                  <a class="nav-link {% active_url 'users/' %}" href="{% url 'users:detail' %}">
+                    <i class="fas fa-user-circle" data-toggle="tooltip" title="Profile"></i>
+                  </a>
+                </li>
+                <li class="nav-item">
+                  {# URL provided by django-allauth/account/urls.py #}
+                  <a class="nav-link {% active_url 'logout/' %}" href="{% url 'account_logout' %}">
+                    <i class="fas fa-sign-out-alt" data-toggle="tooltip" title="Sign Out"></i>
+                  </a>
+                </li>
+                {% else %}
+                <li class="nav-item">
+                  {# URL provided by django-allauth/account/urls.py #}
+                  <a id="sign-up-link" class="nav-link"
+                    href="{% url 'account_signup' %}">
+                    Sign Up
+                  </a>
+                </li>
+                <li class="nav-item">
+                  {# URL provided by django-allauth/account/urls.py #}
+                  <a id="log-in-link" class="nav-link"
+                    href="{% url 'account_login' %}">
+                    Sign In
+                  </a>
+                </li>
+                {% endif %}
+              </ul>
+            </div>
+          </div>
+        </nav>
+      </section>
+    </div>
+  </div>
+</div>
+{% endblock navbar %}
+
+{% block content %}
+<div class="{% block content_container %}container bg-white{% endblock content_container %}">
+  <div class="row justify-content-center">
+    <div class="col">
+      <hr>
+    </div>
+  </div>
+  <div class="row justify-content-center main">
+    <div class="{% block content_col %}col-6{% endblock content_col %}">
+      <!-- headline -->
+      {% block header %}
+      <header id="headline">
+        <br>
+        <h1 class="text-uppercase text-center font-weight-bold">
+          {% block headline %}{% endblock headline %}
+        </h1>
+        <hr>
+        <p class="headline-content">
+          {% block headline_content %}{% endblock headline_content %}
+        </p>
+      </header>
+      {% endblock header %}
+      <!-- content -->
+      {% block section %}
+      <section id="content">
+        {% block subnav %}{% endblock subnav %}
+        {% block section_content %}{% endblock section_content %}
+      </section>
+      {% endblock section %}
+    </div>
+  </div>
+  <div class="row justify-content-center">
+    <div class="{% block footer_col %}col-11{% endblock footer_col %}">
+      <!-- footer -->
+      {% block footer %}
+      <footer id="footer" class="footer">
+        <hr>
+        <p class="text-center text-muted small">
+          © Copyright 2020, Alvarez & Marsal Holdings, LLC. All Rights Reserved. <br>
+        </p>
+        <p class="text-center text-muted small">
+          version {{ app_version }}
+        </p>
+      </footer>
+      {% endblock footer %}
+    </div>
+  </div>
+</div>
+{% endblock content %}
+
+{% block external_javascript %}
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
+  integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
+  crossorigin="anonymous">
+</script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"
+  integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN"
+  crossorigin="anonymous">
+</script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"
+  integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV"
+  crossorigin="anonymous">
+</script>
+{% endblock external_javascript %}
+
+{% block project_javascript %}
+{{ block.super }}
+<script>
+  $(function () {
+    $('[data-toggle="tooltip"]').tooltip()
+  })
+</script>
+{% endblock project_javascript %}

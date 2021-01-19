@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+
+{% load djcorecap static i18n %}
+
+{% block external_css %}
+{{ block.super }}
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.22/css/jquery.dataTables.min.css">
+{% endblock external_css %}
+
+{% block brand_url %}{% url 'dashboard' %}{% endblock brand_url %}
+
+{% block header %}{% endblock header %}
+
+{% block navbar_container %}container-fluid bg-white{% endblock navbar_container %}
+{% block content_container %}container-fluid bg-white{% endblock content_container %}
+{% block content_col %}col{% endblock content_col %}
+{% block footer_col %}col{% endblock footer_col %}
+
+{% block subnav %}
+<div class="row justify-content-between">
+  <div class="col">
+    {% block subnav_content %}{% endblock subnav_content %}
+  </div>
+  <div class="col text-center">
+    <h2 class="text-info">
+      {% block app_badge %}{% endblock app_badge %}
+    </h2>
+  </div>
+  <div class="col">
+    <h5 class="text-info text-uppercase text-right mt-3 mr-0 mr-xl-5">
+      {% block app_name %}{% endblock app_name %}
+    </h5>
+  </div>
+</div>
+<div class="row justify-content-center">
+  <div class="col ml-2 mt-2 mr-2">
+    {% block breadcrumb %}{% endblock breadcrumb %}
+  </div>
+</div>
+{% endblock subnav %}
+
+{% block section_content %}
+<div class="row justify-content-center">
+  <div class="col ml-4 mr-4">
+    {% block headline %}<br>{% endblock headline %}
+  </div>
+</div>
+<div class="row justify-content-center">
+  <div class="{% block content_left_col %}col-3 col-xl-2{% endblock content_left_col %}">
+    {% block content_left %}{% endblock content_left %}
+  </div>
+  <div class="{% block content_center_col %}col-6 col-xl-6{% endblock content_center_col %}">
+    {% block content_center %}{% endblock content_center %}
+  </div>
+  <div class="{% block content_right_col %}col-3 col-xl-3{% endblock content_right_col %}">
+    {% block content_right %}{% endblock content_right %}
+  </div>
+</div>
+{% endblock section_content %}
+
+{% block external_javascript %}
+{{ block.super }}
+<script src="https://cdn.datatables.net/1.10.22/js/jquery.dataTables.min.js"></script>
+{% endblock external_javascript %}

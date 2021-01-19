@@ -1,0 +1,127 @@
+{% raw %}{% extends "djcorecap/base.html" %}
+
+{% load djcorecap static i18n {% endraw %}{% if cookiecutter.use_compressor == "y" %}compress{% endif %}{% raw %}%}
+
+{% block description %}
+{% endraw %}{{ cookiecutter.description }}{% raw %}
+{% endblock description %}
+
+{% block author %}
+{% endraw %}{{ cookiecutter.author_name }} {{ cookiecutter.email }}{% raw %}
+{% endblock author %}
+
+{% block title %}
+{% endraw %}{{ cookiecutter.project_name }}{% raw %}
+{% endblock title %}
+
+{% block external_css %}
+{% endraw %}{% if cookiecutter.custom_bootstrap_compilation == "n" %}{% raw %}
+<!-- Latest compiled and minified Bootstrap -->
+<link rel="stylesheet"
+  href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+  integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z"
+  crossorigin="anonymous">
+{% endraw %}{% endif %}{% raw %}
+<link rel="stylesheet"
+  href="https://use.fontawesome.com/releases/v5.14.0/css/all.css"
+  crossorigin="anonymous">
+<link rel="stylesheet"
+  href="https://fonts.googleapis.com/css?family=Noto+Sans">
+{% endraw %}{% if cookiecutter.use_compressor == "y" %}{% raw %}{% compress css %}{% endraw %}{% endif %}{% raw %}
+{% endblock external_css %}
+
+{% block project_css %}
+<link rel="stylesheet"
+  href="{% static 'css/custom_bootstrap_vars.css' %}">
+{% endraw %}{% if cookiecutter.js_task_runner == "Gulp" and cookiecutter.use_compressor == "n" %}{% raw %}
+<link rel="stylesheet"
+  href="{% static 'css/project.min.css' %}">
+{% endraw %}{% else %}{% raw %}
+{{ block.super }}
+{% endraw %}{% endif %}
+{% if cookiecutter.use_compressor == "y" %}{% raw %}{% endcompress %}{% endraw %}{% endif %}{% raw %}
+{% endblock project_css %}
+
+{% block brand %}
+{% endraw %}{{ cookiecutter.project_name }}{% raw %}
+{% endblock brand %}
+
+{% block content %}
+<div class="container bg-white">
+  <div class="row justify-content-center">
+    <div class="col">
+      <hr>
+    </div>
+  </div>
+  <div class="row justify-content-center main">
+    <div class="col-6">
+      <!-- headline -->
+      {% block header %}
+      <header id="headline">
+        <br>
+        <h1 class="text-uppercase text-center font-weight-bold">
+          {% block headline %}{% endblock headline %}
+        </h1>
+        <hr>
+        <p class="headline-content">
+          {% block headline_content %}{% endblock headline_content %}
+        </p>
+      </header>
+      {% endblock header %}
+      <!-- content -->
+      {% block section %}
+      <section id="content">
+        {% block subnav %}{% endblock subnav %}
+        {% block section_content %}Content...{% endblock section_content %}
+      </section>
+      {% endblock section %}
+    </div>
+  </div>
+  <div class="row justify-content-center">
+    <div class="col-11">
+      <!-- footer -->
+      {% block footer %}
+      <footer id="footer" class="footer">
+        <hr>
+        <p class="text-center text-muted small">
+          version {{ app_version }}
+        </p>
+      </footer>
+      {% endblock footer %}
+    </div>
+  </div>
+</div>
+{% endblock content %}
+
+{% block external_javascript %}
+{% endraw %}{% if cookiecutter.custom_bootstrap_compilation == "y" and cookiecutter.js_task_runner == "Gulp" %}{% raw %}
+<!-- Vendor dependencies bundled as one file-->
+{% endraw %}{% if cookiecutter.use_compressor == "y" %}{% raw %}{% compress js %}{% endraw %}{% endif %}{% raw %}
+<script src="{% static 'js/vendors.js' %}"></script>
+{% endraw %}{% if cookiecutter.use_compressor == "y" %}{% raw %}{% endcompress %}{% endraw %}{% endif %}
+{% else %}{% raw %}
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
+  integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
+  crossorigin="anonymous">
+</script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"
+  integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN"
+  crossorigin="anonymous">
+</script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"
+  integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV"
+  crossorigin="anonymous">
+</script>
+{% endraw %}{% endif %}{% raw %}
+{% endblock external_javascript %}
+
+{% block project_javascript %}
+{% endraw %}{% if cookiecutter.use_compressor == "y" %}{% raw %}{% compress js %}{% endraw %}{% endif %}{% raw %}
+{{ block.super }}
+<script>
+  $(function () {
+    $('[data-toggle="tooltip"]').tooltip()
+  })
+</script>
+{% endraw %}{% if cookiecutter.use_compressor == "y" %}{% raw %}{% endcompress %}{% endraw %}{% endif %}{% raw %}
+{% endblock project_javascript %}{% endraw %}
