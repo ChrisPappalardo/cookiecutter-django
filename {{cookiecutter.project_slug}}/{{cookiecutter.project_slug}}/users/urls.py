@@ -9,10 +9,7 @@ urls for the users app
 
 from django.urls import path
 
-from .views import (
-    UserInfoUpdateView,
-    UserRedirectView,
-)
+from .views import UserInfoUpdateView
 
 
 app_name = 'users'
@@ -23,11 +20,5 @@ urlpatterns = [
         'detail/',
         UserInfoUpdateView.as_view(),
         name='detail',
-    ),
-
-    path(
-        'redirect/',
-        UserRedirectView.as_view(),
-        name='redirect',
     ),
 ]

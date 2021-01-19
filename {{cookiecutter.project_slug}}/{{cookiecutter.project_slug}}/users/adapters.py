@@ -1,4 +1,11 @@
-from typing import Any
+# -*- coding: utf-8 -*-
+
+'''
+users/adapters
+--------------
+
+allauth adapters for the users app
+'''
 
 from allauth.account.adapter import DefaultAccountAdapter
 from allauth.socialaccount.adapter import DefaultSocialAccountAdapter
@@ -13,4 +20,5 @@ class AccountAdapter(DefaultAccountAdapter):
 
 class SocialAccountAdapter(DefaultSocialAccountAdapter):
     def is_open_for_signup(self, request: HttpRequest, sociallogin: Any):
-        return getattr(settings, "ACCOUNT_ALLOW_REGISTRATION", True)
+        # NOTE: social auth is disabled by default
+        return False

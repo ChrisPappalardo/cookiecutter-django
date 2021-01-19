@@ -9,6 +9,7 @@ forms for the users app
 
 import logging
 
+from django.conf import settings
 from django.forms import ModelForm, CharField
 
 from allauth.account.adapter import get_adapter
@@ -83,3 +84,13 @@ class UserSignupForm(_SignupForm):
         'password2',
         'captcha',
     ]
+
+    def save(self, *args, **kwargs):
+        '''
+        force username to email if set
+        '''
+
+        if settings.ACCOUNT_AUTHENTICATION_METHOD == 'email':
+            self.cleaned_data['username'] = self.cleaned_data['email']
+
+        return super().save(*args, **kwargs)

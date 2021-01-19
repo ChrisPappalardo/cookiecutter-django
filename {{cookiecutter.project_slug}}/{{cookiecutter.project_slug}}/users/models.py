@@ -1,3 +1,12 @@
+# -*- coding: utf-8 -*-
+
+'''
+users/models
+------------
+
+models for the users app
+'''
+
 from django.contrib.auth import get_user_model
 from django_countries.fields import CountryField
 from django.db import models

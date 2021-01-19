@@ -1,0 +1,66 @@
+{% extends 'base_app.html' %}
+
+{% load djcorecap %}
+
+{% block subnav_content %}
+<nav class="navbar navbar-light">
+  <ul class="navbar-nav">
+    <li class="nav-item">
+      <a class="nav-link active" href="{% url 'users:detail' %}">
+        <h5>
+          {{ request.user.first_name }} {{request.user.last_name }}
+        </h5>
+      </a>
+    </li>
+  </ul>
+</nav>
+{%endblock subnav_content %}
+
+{% block app_badge %}
+<i class="fas fa-user-circle"></i>
+{% endblock app_badge %}
+
+{% block app_name %}Profile{% endblock app_name %}
+
+{% block content_left_col %}col-3 col-xl-3{% endblock content_left_col %}
+
+{% block content_left %}
+<table class="table table-sm table-borderless small text-muted ml-4">
+  <tbody>
+    <tr>
+      <td>Last login</td>
+      <td>{{ user.last_login }}</td>
+    </tr>
+    <tr>
+      <td>Date joined</td>
+      <td>{{ user.date_joined }}</td>
+    </tr>
+    {% if user.is_superuser %}
+    <tr>
+      <td class="text-warning">Superuser</td>
+      <td></td>
+    </tr>
+    {% elif user.is_staff %}
+    <tr>
+      <td class="text-info">Staff</td>
+      <td></td>
+    </tr>
+    {% endif %}
+  </tbody>
+</table>
+{% endblock content_left %}
+
+{% block content_center %}
+<ul class="nav nav-tabs nav-fill">
+  <li class="nav-item">
+    <a class="nav-link {% active_url 'users/detail/$' %}" href="{% url 'users:detail' %}">
+      Basic Info
+    </a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link {% active_url 'accounts/email/$' %}" href="{% url 'account_email' %}">
+      E-Mail
+    </a>
+  </li>
+</ul>
+{% endblock content_center %}

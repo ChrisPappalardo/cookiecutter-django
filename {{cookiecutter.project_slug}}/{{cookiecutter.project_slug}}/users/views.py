@@ -12,10 +12,7 @@ import logging
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.messages.views import SuccessMessageMixin
 from django.urls import reverse, reverse_lazy
-from django.views.generic import (
-    RedirectView,
-    UpdateView,
-)
+from django.views.generic import UpdateView
 
 from crispy_forms.bootstrap import FormActions
 from crispy_forms.helper import FormHelper
@@ -72,14 +69,3 @@ class UserInfoUpdateView(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
 
     def get_object(self):
         return self.request.user.profile
-
-
-class UserRedirectView(LoginRequiredMixin, RedirectView):
-    '''
-    user redirect view
-    '''
-
-    permanent = False
-
-    def get_redirect_url(self):
-        return reverse('users:detail')
