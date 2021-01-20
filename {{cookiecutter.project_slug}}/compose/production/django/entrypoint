@@ -4,10 +4,10 @@ set -o errexit
 set -o pipefail
 set -o nounset
 
-{%- if cookiecutter.use_celery == 'y' -%}
+{%- if cookiecutter.use_celery == 'y' %}
 # N.B. If only .env files supported variable expansion...
 export CELERY_BROKER_URL="${REDIS_URL}"
-{%- endif -%}
+{%- endif %}
 
 if [ -z "${POSTGRES_USER}" ]; then
     base_postgres_image_default_user='postgres'

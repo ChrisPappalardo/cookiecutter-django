@@ -49,7 +49,7 @@ containerDefinitions:
   - name: 'RECAPTCHA_PRIVATE_KEY'
     value: 'SET-ME'
   - name: 'POSTGRES_HOST'
-    value: 'db.{{ cookeicutter.project_slug }}.{{ cookiecutter.domain_name }}'
+    value: 'db.{{ cookiecutter.project_slug }}.{{ cookiecutter.domain_name }}'
   - name: 'POSTGRES_PORT'
     value: '5432'
   - name: 'POSTGRES_DB'

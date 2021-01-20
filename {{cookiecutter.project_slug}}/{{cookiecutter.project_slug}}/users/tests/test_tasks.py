@@ -1,14 +1,16 @@
 import pytest
 from celery.result import EagerResult
 
-
 from {{ cookiecutter.project_slug }}.users.tasks import get_users_count
 from {{ cookiecutter.project_slug }}.users.tests.factories import UserFactory
 
 
 @pytest.mark.django_db
 def test_user_count(settings):
-    """A basic test to execute the get_users_count Celery task."""
+    """
+    A basic test to execute the get_users_count Celery task.
+    """
+
     UserFactory.create_batch(3)
     settings.CELERY_TASK_ALWAYS_EAGER = True
     task_result = get_users_count.delay()

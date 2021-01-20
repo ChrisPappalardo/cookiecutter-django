@@ -1,40 +1,33 @@
+from copy import copy
 import pytest
 
-from {{ cookiecutter.project_slug }}.users.forms import UserCreationForm
+from {{ cookiecutter.project_slug }}.users.forms import UserSignupForm
 from {{ cookiecutter.project_slug }}.users.tests.factories import UserFactory
 
 pytestmark = pytest.mark.django_db
 
 
-class TestUserCreationForm:
-    def test_clean_username(self):
-        # A user with proto_user params does not exist yet.
-        proto_user = UserFactory.build()
+# TODO: custom add reset password and user info form tests
 
-        form = UserCreationForm(
-            {
-                "username": proto_user.username,
-                "password1": proto_user._password,
-                "password2": proto_user._password,
-            }
-        )
 
+class TestUserSignupForm:
+    user = UserFactory.build()
+    form_data = {
+        "username": user.username,
+        "email": user.email,
+        "password1": "#MyPassword123!",
+        "password2": "#MyPassword123!",
+        "g-recaptcha-response": "foo",
+    }
+
+    def test_form_is_valid(self):
+        form = UserSignupForm(self.form_data)
         assert form.is_valid()
-        assert form.clean_username() == proto_user.username
 
-        # Creating a user.
-        form.save()
-
-        # The user with proto_user params already exists,
-        # hence cannot be created.
-        form = UserCreationForm(
-            {
-                "username": proto_user.username,
-                "password1": proto_user._password,
-                "password2": proto_user._password,
-            }
-        )
-
+    def test_form_is_invalid(self):
+        form_data = copy(self.form_data)
+        form_data["email"] = "foo"
+        form = UserSignupForm(form_data)
         assert not form.is_valid()
-        assert len(form.errors) == 1
-        assert "username" in form.errors
+
+    # TODO: add custom save test

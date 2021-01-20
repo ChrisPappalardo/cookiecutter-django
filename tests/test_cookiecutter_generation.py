@@ -127,7 +127,9 @@ def test_black_passes(cookies, context_combination):
     result = cookies.bake(extra_context=context_combination)
 
     try:
-        sh.black("--check", "--diff", "--exclude", "migrations", f"{result.project}/")
+        sh.black(
+            "--check", "--diff", "--exclude", "migrations|urls", f"{result.project}/"
+        )
     except sh.ErrorReturnCode as e:
         pytest.fail(e)
 

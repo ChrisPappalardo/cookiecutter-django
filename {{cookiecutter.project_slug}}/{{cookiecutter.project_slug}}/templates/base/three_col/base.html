@@ -1,40 +1,49 @@
-{% extends "djcorecap/base.html" %}
+{% raw %}{% extends "djcorecap/base.html" %}
 
-{% load djcorecap static i18n %}
+{% load djcorecap static i18n {% endraw %}{% if cookiecutter.use_compressor == "y" %}compress{% endif %}{% raw %}%}
 
 {% block description %}
-Centralized model, processing, and data hub for Alvarez and Marsal applications.
+{% endraw %}{{ cookiecutter.description }}{% raw %}
 {% endblock description %}
 
 {% block author %}
-Chris Pappalardo cpappalardo@alvarezandmarsal.com
+{% endraw %}{{ cookiecutter.author_name }} {{ cookiecutter.email }}{% raw %}
 {% endblock author %}
 
 {% block title %}
-A&M Hub
+{% endraw %}{{ cookiecutter.project_name }}{% raw %}
 {% endblock title %}
 
 {% block external_css %}
+{% endraw %}{% if cookiecutter.custom_bootstrap_compilation == "n" %}{% raw %}
 <!-- Latest compiled and minified Bootstrap -->
 <link rel="stylesheet"
   href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
   integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z"
   crossorigin="anonymous">
+{% endraw %}{% endif %}{% raw %}
 <link rel="stylesheet"
   href="https://use.fontawesome.com/releases/v5.14.0/css/all.css"
   crossorigin="anonymous">
 <link rel="stylesheet"
   href="https://fonts.googleapis.com/css?family=Noto+Sans">
+{% endraw %}{% if cookiecutter.use_compressor == "y" %}{% raw %}{% compress css %}{% endraw %}{% endif %}{% raw %}
 {% endblock external_css %}
 
 {% block project_css %}
 <link rel="stylesheet"
   href="{% static 'css/custom_bootstrap_vars.css' %}">
+{% endraw %}{% if cookiecutter.js_task_runner == "Gulp" and cookiecutter.use_compressor == "n" %}{% raw %}
+<link rel="stylesheet"
+  href="{% static 'css/project.min.css' %}">
+{% endraw %}{% else %}{% raw %}
 {{ block.super }}
+{% endraw %}{% endif %}
+{% if cookiecutter.use_compressor == "y" %}{% raw %}{% endcompress %}{% endraw %}{% endif %}{% raw %}
 {% endblock project_css %}
 
 {% block brand %}
-A&M Hub
+{% endraw %}{{ cookiecutter.project_name }}{% raw %}
 {% endblock brand %}
 
 {% block navbar %}
@@ -50,33 +59,14 @@ A&M Hub
             </button>
             <a class="navbar-brand d-none d-lg-block text-secondary"
               href="{% block brand_url %}{% url 'home' %}{% endblock brand_url %}">
-              <img class="d-inline-block align-top" src="{% static 'images/A&M_hub_logo.png' %}" height="50" alt="">
+              <img class="d-inline-block align-top" src="{% static 'images/{% endraw %}{{ cookiecutter.project_slug }}{% raw %}_logo.png' %}" height="50" alt="">
             </a>
           </div>
           <div class="col-6 navbar-shim">
             <div class="collapse navbar-collapse justify-content-end" id="navbarSupportedContent">
               <ul class="navbar-nav">
                 {% if request.user.is_authenticated %}
-                <li class="nav-item">
-                  <a class="nav-link {% active_url 'data/' %}" href="{% url 'data:database_list' %}">
-                    <i class="fas fa-database" data-toggle="tooltip" title="Data"></i>
-                  </a>
-                </li>
-                <li class="nav-item">
-                  <a class="nav-link {% active_url 'files/' %}" href="{% url 'files:list' %}">
-                    <i class="fas fa-folder-open" data-toggle="tooltip" title="Files"></i>
-                  </a>
-                </li>
-                <li class="nav-item">
-                  <a class="nav-link {% active_url 'automation/' %}" href="{% url 'automation:pipeline_list' %}">
-                    <i class="fas fa-code-branch" data-toggle="tooltip" title="Automation"></i>
-                  </a>
-                </li>
-                <li class="nav-item">
-                  <a class="nav-link {% active_url 'help/' %}" href="{% url 'help' %}">
-                    <i class="fas fa-question-circle" data-toggle="tooltip" title="Help"></i>
-                  </a>
-                </li>
+                <!-- insert app nav links here -->
                 {% if request.user.is_staff %}
                 <li class="nav-item">
                   <a class="nav-link" href="{% url 'admin:index' %}">
@@ -160,7 +150,7 @@ A&M Hub
       <footer id="footer" class="footer">
         <hr>
         <p class="text-center text-muted small">
-          © Copyright 2020, Alvarez & Marsal Holdings, LLC. All Rights Reserved. <br>
+          © Copyright 2021 All Rights Reserved<br>
         </p>
         <p class="text-center text-muted small">
           version {{ app_version }}
@@ -173,6 +163,12 @@ A&M Hub
 {% endblock content %}
 
 {% block external_javascript %}
+{% endraw %}{% if cookiecutter.custom_bootstrap_compilation == "y" and cookiecutter.js_task_runner == "Gulp" %}{% raw %}
+<!-- Vendor dependencies bundled as one file-->
+{% endraw %}{% if cookiecutter.use_compressor == "y" %}{% raw %}{% compress js %}{% endraw %}{% endif %}{% raw %}
+<script src="{% static 'js/vendors.js' %}"></script>
+{% endraw %}{% if cookiecutter.use_compressor == "y" %}{% raw %}{% endcompress %}{% endraw %}{% endif %}
+{% else %}{% raw %}
 <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
   integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
   crossorigin="anonymous">
@@ -185,13 +181,16 @@ A&M Hub
   integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV"
   crossorigin="anonymous">
 </script>
+{% endraw %}{% endif %}{% raw %}
 {% endblock external_javascript %}
 
 {% block project_javascript %}
+{% endraw %}{% if cookiecutter.use_compressor == "y" %}{% raw %}{% compress js %}{% endraw %}{% endif %}{% raw %}
 {{ block.super }}
 <script>
   $(function () {
     $('[data-toggle="tooltip"]').tooltip()
   })
 </script>
-{% endblock project_javascript %}
+{% endraw %}{% if cookiecutter.use_compressor == "y" %}{% raw %}{% endcompress %}{% endraw %}{% endif %}{% raw %}
+{% endblock project_javascript %}{% endraw %}

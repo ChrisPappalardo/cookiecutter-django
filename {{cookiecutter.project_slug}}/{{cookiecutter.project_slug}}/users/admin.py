@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
 
-'''
+"""
 users/admin
 -----------
 
 admin settings for the users app
-'''
+"""
 
 from django.conf import settings
 from django.contrib import admin
@@ -21,36 +21,30 @@ User = get_user_model()
 class ProfileInline(admin.StackedInline):
     model = Profile
     can_delete = False
-    fieldsets = (
-        ('misc', {'fields': (
-            'country',
-        )}),
-    )
-    verbose_name_plural = 'Profile'
+    fieldsets = (("misc", {"fields": ("country",)}),)
+    verbose_name_plural = "Profile"
 
 
 class UserAdmin(auth_admin.UserAdmin):
     inlines = auth_admin.UserAdmin.inlines + [ProfileInline]
     list_display = [
-        'username',
-        'first_name',
-        'last_name',
-        'email',
-        'get_country',
-        'is_active',
-        'is_staff',
-        'is_superuser',
-        'date_joined',
-        'last_login',
+        "username",
+        "first_name",
+        "last_name",
+        "email",
+        "get_country",
+        "is_active",
+        "is_staff",
+        "is_superuser",
+        "date_joined",
+        "last_login",
     ]
-    search_fields = [
-        'first_name',
-        'last_name',
-    ]
+    search_fields = ["first_name", "last_name"]
 
     def get_country(self, instance):
         return instance.profile.country
-    get_country.short_description = 'Country'
+
+    get_country.short_description = "Country"
 
 
 admin.site.unregister(User)

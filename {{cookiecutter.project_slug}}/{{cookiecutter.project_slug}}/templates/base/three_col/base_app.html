@@ -1,13 +1,14 @@
-{% extends "base.html" %}
+{% raw %}{% extends "base.html" %}
 
-{% load djcorecap static i18n %}
+{% load djcorecap static i18n {% endraw %}{% if cookiecutter.use_compressor == "y" %}compress{% endif %}{% raw %}%}
 
 {% block external_css %}
 {{ block.super }}
-<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.22/css/jquery.dataTables.min.css">
+<link rel="stylesheet"
+  href="https://cdn.datatables.net/1.10.22/css/jquery.dataTables.min.css">
 {% endblock external_css %}
 
-{% block brand_url %}{% url 'dashboard' %}{% endblock brand_url %}
+{% block brand_url %}{% url 'home' %}{% endblock brand_url %}
 
 {% block header %}{% endblock header %}
 
@@ -60,5 +61,6 @@
 
 {% block external_javascript %}
 {{ block.super }}
-<script src="https://cdn.datatables.net/1.10.22/js/jquery.dataTables.min.js"></script>
-{% endblock external_javascript %}
+<script src="https://cdn.datatables.net/1.10.22/js/jquery.dataTables.min.js">
+</script>
+{% endblock external_javascript %}{% endraw %}

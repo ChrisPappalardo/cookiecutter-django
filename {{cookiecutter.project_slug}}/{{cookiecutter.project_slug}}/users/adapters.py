@@ -1,11 +1,13 @@
 # -*- coding: utf-8 -*-
 
-'''
+"""
 users/adapters
 --------------
 
 allauth adapters for the users app
-'''
+"""
+
+from typing import Any
 
 from allauth.account.adapter import DefaultAccountAdapter
 from allauth.socialaccount.adapter import DefaultSocialAccountAdapter

@@ -1,11 +1,12 @@
-{% if cookiecutter.use_sentry == 'y' -%}
+# flake8: noqa
+{% if cookiecutter.use_sentry == "y" -%}
 import sentry_sdk
 from sentry_sdk.integrations.django import DjangoIntegration
-{% if cookiecutter.use_celery == 'y' -%}
+{% if cookiecutter.use_celery == "y" -%}
 from sentry_sdk.integrations.celery import CeleryIntegration
 {% endif %}
 {% endif -%}
-from .base import *  # noqa
+from .base import *
 from .base import env
 
 # GENERAL
@@ -47,13 +48,13 @@ SECURE_CONTENT_TYPE_NOSNIFF = env.bool(
     "DJANGO_SECURE_CONTENT_TYPE_NOSNIFF", default=True
 )
 
-{% if cookiecutter.cloud_provider != 'None' -%}
+{% if cookiecutter.cloud_provider != "None" -%}
 # STORAGES
 # ------------------------------------------------------------------------------
 # https://django-storages.readthedocs.io/en/latest/#installation
 INSTALLED_APPS += ["storages"]  # noqa F405
 {%- endif -%}
-{% if cookiecutter.cloud_provider == 'AWS' %}
+{% if cookiecutter.cloud_provider == "AWS" %}
 # https://django-storages.readthedocs.io/en/latest/backends/amazon-S3.html#settings
 AWS_ACCESS_KEY_ID = env("DJANGO_AWS_ACCESS_KEY_ID")
 # https://django-storages.readthedocs.io/en/latest/backends/amazon-S3.html#settings
@@ -62,7 +63,7 @@ AWS_SECRET_ACCESS_KEY = env("DJANGO_AWS_SECRET_ACCESS_KEY")
 AWS_STORAGE_BUCKET_NAME = env("DJANGO_AWS_STORAGE_BUCKET_NAME")
 # https://django-storages.readthedocs.io/en/latest/backends/amazon-S3.html#settings
 AWS_QUERYSTRING_AUTH = False
-# DO NOT change these unless you know what you're doing.
+# DO NOT change these unless you know what you"re doing.
 _AWS_EXPIRY = 60 * 60 * 24 * 7
 # https://django-storages.readthedocs.io/en/latest/backends/amazon-S3.html#settings
 AWS_S3_OBJECT_PARAMETERS = {
@@ -72,28 +73,28 @@ AWS_S3_OBJECT_PARAMETERS = {
 AWS_DEFAULT_ACL = None
 # https://django-storages.readthedocs.io/en/latest/backends/amazon-S3.html#settings
 AWS_S3_REGION_NAME = env("DJANGO_AWS_S3_REGION_NAME", default=None)
-{% elif cookiecutter.cloud_provider == 'GCP' %}
+{% elif cookiecutter.cloud_provider == "GCP" %}
 DEFAULT_FILE_STORAGE = "storages.backends.gcloud.GoogleCloudStorage"
 GS_BUCKET_NAME = env("DJANGO_GCP_STORAGE_BUCKET_NAME")
 GS_DEFAULT_ACL = "publicRead"
 {% endif -%}
 
-{% if cookiecutter.cloud_provider != 'None' or cookiecutter.use_whitenoise == 'y' -%}
+{% if cookiecutter.cloud_provider != "None" or cookiecutter.use_whitenoise == "y" -%}
 # STATIC
 # ------------------------
 {% endif -%}
-{% if cookiecutter.use_whitenoise == 'y' -%}
+{% if cookiecutter.use_whitenoise == "y" -%}
 STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
-{% elif cookiecutter.cloud_provider == 'AWS' -%}
+{% elif cookiecutter.cloud_provider == "AWS" -%}
 STATICFILES_STORAGE = "config.settings.production.StaticRootS3Boto3Storage"
 STATIC_URL = f"https://{AWS_STORAGE_BUCKET_NAME}.s3.amazonaws.com/static/"
-{% elif cookiecutter.cloud_provider == 'GCP' -%}
+{% elif cookiecutter.cloud_provider == "GCP" -%}
 STATIC_URL = f"https://storage.googleapis.com/{GS_BUCKET_NAME}/static/"
 {% endif -%}
 
 # MEDIA
 # ------------------------------------------------------------------------------
-{%- if cookiecutter.cloud_provider == 'AWS' %}
+{%- if cookiecutter.cloud_provider == "AWS" %}
 # region http://stackoverflow.com/questions/10390244/
 # Full-fledge class: https://stackoverflow.com/a/18046120/104731
 from storages.backends.s3boto3 import S3Boto3Storage  # noqa E402
@@ -112,7 +113,7 @@ class MediaRootS3Boto3Storage(S3Boto3Storage):
 # endregion
 DEFAULT_FILE_STORAGE = "config.settings.production.MediaRootS3Boto3Storage"
 MEDIA_URL = f"https://{AWS_STORAGE_BUCKET_NAME}.s3.amazonaws.com/media/"
-{%- elif cookiecutter.cloud_provider == 'GCP' %}
+{%- elif cookiecutter.cloud_provider == "GCP" %}
 MEDIA_URL = f"https://storage.googleapis.com/{GS_BUCKET_NAME}/media/"
 MEDIA_ROOT = f"https://storage.googleapis.com/{GS_BUCKET_NAME}/media/"
 {%- endif %}
@@ -134,31 +135,30 @@ TEMPLATES[0]["OPTIONS"]["loaders"] = [  # noqa F405
 # ------------------------------------------------------------------------------
 # https://docs.djangoproject.com/en/dev/ref/settings/#server-email
 SERVER_EMAIL = env(
-    "DJANGO_SERVER_EMAIL", default=DEFAULT_FROM_EMAIL,
+    "DJANGO_SERVER_EMAIL",
+    default=DEFAULT_FROM_EMAIL,
 )
 # https://docs.djangoproject.com/en/dev/ref/settings/#email-subject-prefix
-EMAIL_SUBJECT_PREFIX = env(
-    "DJANGO_EMAIL_SUBJECT_PREFIX", default="[Django] "
-)
-EMAIL_HOST = env('DJANGO_EMAIL_HOST')
-EMAIL_HOST_USER = env('DJANGO_EMAIL_HOST_USER')
-EMAIL_HOST_PASSWORD = env('DJANGO_EMAIL_HOST_PASSWORD')
-EMAIL_USE_TLS = env('DJANGO_EMAIL_USE_TLS', default=True)
-EMAIL_PORT = env('DJANGO_EMAIL_PORT', default=587)
+EMAIL_SUBJECT_PREFIX = env("DJANGO_EMAIL_SUBJECT_PREFIX", default="[Django] ")
+EMAIL_HOST = env("DJANGO_EMAIL_HOST")
+EMAIL_HOST_USER = env("DJANGO_EMAIL_HOST_USER")
+EMAIL_HOST_PASSWORD = env("DJANGO_EMAIL_HOST_PASSWORD")
+EMAIL_USE_TLS = env("DJANGO_EMAIL_USE_TLS", default=True)
+EMAIL_PORT = env("DJANGO_EMAIL_PORT", default=587)
 
 # ADMIN
 # ------------------------------------------------------------------------------
 # Django Admin URL regex.
 ADMIN_URL = env("DJANGO_ADMIN_URL")
 
-{% if cookiecutter.use_whitenoise == 'y' -%}
+{% if cookiecutter.use_whitenoise == "y" -%}
 # WhiteNoise
 # ------------------------------------------------------------------------------
 # http://whitenoise.evans.io/en/latest/django.html#enable-whitenoise
 MIDDLEWARE.insert(1, "whitenoise.middleware.WhiteNoiseMiddleware")  # noqa F405
 
 {% endif %}
-{%- if cookiecutter.use_compressor == 'y' -%}
+{%- if cookiecutter.use_compressor == "y" -%}
 # django-compressor
 # ------------------------------------------------------------------------------
 # https://django-compressor.readthedocs.io/en/latest/settings/#django.conf.settings.COMPRESS_ENABLED
@@ -166,9 +166,9 @@ COMPRESS_ENABLED = env.bool("COMPRESS_ENABLED", default=True)
 # https://django-compressor.readthedocs.io/en/latest/settings/#django.conf.settings.COMPRESS_STORAGE
 COMPRESS_STORAGE = "storages.backends.s3boto3.S3Boto3Storage"
 # https://django-compressor.readthedocs.io/en/latest/settings/#django.conf.settings.COMPRESS_URL
-COMPRESS_URL = STATIC_URL{% if cookiecutter.use_whitenoise == 'y' or cookiecutter.cloud_provider == 'None' %}  # noqa F405{% endif %}
+COMPRESS_URL = STATIC_URL{% if cookiecutter.use_whitenoise == "y" or cookiecutter.cloud_provider == "None" %}  # noqa F405{% endif %}
 {% endif %}
-{%- if cookiecutter.use_whitenoise == 'n' -%}
+{%- if cookiecutter.use_whitenoise == "n" -%}
 # Collectfast
 # ------------------------------------------------------------------------------
 # https://github.com/antonagestam/collectfast#installation
@@ -179,7 +179,7 @@ INSTALLED_APPS = ["collectfast"] + INSTALLED_APPS  # noqa F405
 # Remove debug requirement from console handler
 del LOGGING["handlers"]["console"]["filters"]
 
-{% if cookiecutter.use_sentry == 'y' -%}
+{% if cookiecutter.use_sentry == "y" -%}
 # Sentry
 # ------------------------------------------------------------------------------
 SENTRY_DSN = env("SENTRY_DSN")
@@ -188,9 +188,9 @@ sentry_sdk.init(
     dsn=SENTRY_DSN,
     integrations=[
         DjangoIntegration(),
-        {% if cookiecutter.use_celery == 'y' -%}
+        {%- if cookiecutter.use_celery == "y" %}
         CeleryIntegration(),
-        {% endif -%}
+        {%- endif %}
     ],
 )
 

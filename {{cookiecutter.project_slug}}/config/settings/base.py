@@ -60,7 +60,7 @@ CACHES = {
 DATABASES = {"default": env.db("DATABASE_URL")}
 {%- else %}
 DATABASES = {
-    "default": env.db("DATABASE_URL", default="postgres://{% if cookiecutter.windows == 'y' %}localhost{% endif %}/{{cookiecutter.project_slug}}")
+    "default": env.db("DATABASE_URL", default="postgres://{% if cookiecutter.windows == "y" %}localhost{% endif %}/{{cookiecutter.project_slug}}")
 }
 {%- endif %}
 DATABASES["default"]["ATOMIC_REQUESTS"] = True
@@ -96,7 +96,7 @@ THIRD_PARTY_APPS = [
     "allauth.account",
     "allauth.socialaccount",
     "rest_framework",
-{%- if cookiecutter.use_celery == 'y' %}
+{%- if cookiecutter.use_celery == "y" %}
     "django_celery_beat",
 {%- endif %}
     "django_extensions",
@@ -138,7 +138,9 @@ PASSWORD_HASHERS = [
 ]
 # https://docs.djangoproject.com/en/dev/ref/settings/#auth-password-validators
 AUTH_PASSWORD_VALIDATORS = [
-    {"NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator"},
+    {
+        "NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator"
+    },
     {"NAME": "django.contrib.auth.password_validation.MinimumLengthValidator"},
     {"NAME": "django.contrib.auth.password_validation.CommonPasswordValidator"},
     {"NAME": "django.contrib.auth.password_validation.NumericPasswordValidator"},
@@ -230,7 +232,7 @@ SECURE_BROWSER_XSS_FILTER = True
 # https://docs.djangoproject.com/en/dev/ref/settings/#x-frame-options
 X_FRAME_OPTIONS = "DENY"
 # timeout sessions after 15m of inactivity
-SESSION_COOKIE_AGE = env('DJANGO_SESSION_TIMEOUT', default=900)
+SESSION_COOKIE_AGE = env("DJANGO_SESSION_TIMEOUT", default=900)
 
 # EMAIL
 # ------------------------------------------------------------------------------
@@ -241,8 +243,8 @@ EMAIL_BACKEND = env(
 # https://docs.djangoproject.com/en/2.2/ref/settings/#email-timeout
 EMAIL_TIMEOUT = 5
 DEFAULT_FROM_EMAIL = env(
-    'DJANGO_FROM_EMAIL',
-    default='{{ cookiecutter.project_name }} <noreply@{{ cookiecutter.project_slug }}.{{ cookiecutter.domain_name }}>',
+    "DJANGO_FROM_EMAIL",
+    default="{{ cookiecutter.project_name }} <noreply@{{ cookiecutter.project_slug }}.{{ cookiecutter.domain_name }}>",
 )
 
 # ADMIN
@@ -263,58 +265,58 @@ MANAGERS = ADMINS
 # more details on how to customize your logging configuration.
 # Base logging config that is updated with specifics by each environment
 LOGGING = {
-    'version': 1,
-    'disable_existing_loggers': False,
-    'filters': {
-        'require_debug_false': {
-            '()': 'django.utils.log.RequireDebugFalse',
+    "version": 1,
+    "disable_existing_loggers": False,
+    "filters": {
+        "require_debug_false": {
+            "()": "django.utils.log.RequireDebugFalse",
         },
-        'require_debug_true': {
-            '()': 'django.utils.log.RequireDebugTrue',
+        "require_debug_true": {
+            "()": "django.utils.log.RequireDebugTrue",
         },
     },
-    'formatters': {
-        'django.server': {
-            '()': 'django.utils.log.ServerFormatter',
-            'format': '[{server_time}] {message}',
-            'style': '{',
+    "formatters": {
+        "django.server": {
+            "()": "django.utils.log.ServerFormatter",
+            "format": "[{server_time}] {message}",
+            "style": "{",
         },
         "simple": {
             "format": "%(levelname)s %(asctime)s %(message)s",
         },
         "verbose": {
             "format": "%(levelname)s %(asctime)s %(module)s "
-                      "%(process)d %(thread)d %(message)s",
+            "%(process)d %(thread)d %(message)s",
         },
     },
-    'handlers': {
-        'console': {
-            'level': 'INFO',
-            'filters': ['require_debug_true'],
-            'class': 'logging.StreamHandler',
-            'formatter': 'simple',
+    "handlers": {
+        "console": {
+            "level": "INFO",
+            "filters": ["require_debug_true"],
+            "class": "logging.StreamHandler",
+            "formatter": "simple",
         },
-        'django.server': {
-            'level': 'INFO',
-            'class': 'logging.StreamHandler',
-            'formatter': 'django.server',
+        "django.server": {
+            "level": "INFO",
+            "class": "logging.StreamHandler",
+            "formatter": "django.server",
         },
-        'mail_admins': {
-            'level': 'ERROR',
-            'filters': ['require_debug_false'],
-            'class': 'django.utils.log.AdminEmailHandler',
-            'formatter': 'verbose',
+        "mail_admins": {
+            "level": "ERROR",
+            "filters": ["require_debug_false"],
+            "class": "django.utils.log.AdminEmailHandler",
+            "formatter": "verbose",
         },
     },
-    'loggers': {
-        'django': {
-            'handlers': ['console', 'mail_admins'],
-            'level': 'INFO',
+    "loggers": {
+        "django": {
+            "handlers": ["console", "mail_admins"],
+            "level": "INFO",
         },
-        'django.server': {
-            'handlers': ['django.server'],
-            'level': 'INFO',
-            'propagate': False,
+        "django.server": {
+            "handlers": ["django.server"],
+            "level": "INFO",
+            "propagate": False,
         },
         # ensure disallowed host INFO messages are emailed
         "django.security.DisallowedHost": {
@@ -326,7 +328,7 @@ LOGGING = {
     },
 }
 
-{% if cookiecutter.use_celery == 'y' -%}
+{% if cookiecutter.use_celery == "y" -%}
 # Celery
 # ------------------------------------------------------------------------------
 if USE_TZ:
@@ -369,7 +371,7 @@ ACCOUNT_EMAIL_VERIFICATION = "mandatory"
 ACCOUNT_MAX_EMAIL_ADDRESSES = 1
 ACCOUNT_PRESERVE_USERNAME_CASING = False
 
-{% if cookiecutter.use_compressor == 'y' -%}
+{% if cookiecutter.use_compressor == "y" -%}
 # django-compressor
 # ------------------------------------------------------------------------------
 # https://django-compressor.readthedocs.io/en/latest/quickstart/#installation
