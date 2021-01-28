@@ -1,1 +1,11 @@
-{% raw %}{% extends "base.html" %}{% endraw %}
+{% raw %}{% extends "base.html" %}
+
+{% block subnav %}
+{% block subnav_content %}{% endblock subnav_content %}
+{% endblock subnav %}
+
+{% block section_content %}
+{% block content_left %}{% endblock content_left %}
+{% block content_center %}{% endblock content_center %}
+{% block content_right %}{% endblock content_right %}
+{% endblock section_content %}{% endraw %}
