@@ -1,0 +1,59 @@
+AWS
+~~~
+
+Preparation
+...........
+
+a.  Create the VPC and service discovery
+
+    - follow create-public-private-vpc.html
+    - follow create-service-discovery.html
+
+b.  Update ecs-task-*.yml and ecs-service-*.yml with VPC details
+
+c.  Log in to ECR and push images:
+
+    $ aws ecr get-login-password --region {{ cookiecutter.aws_region }} | \
+              docker login --username AWS \
+                           --password-stdin {{ cookiecutter.aws_account_id }}.dkr.ecr.{{ cookiecutter.aws_region }}.amazonaws.com
+
+d.  tag and push images:
+
+    $ docker push {{ cookiecutter.aws_account_id }}.dkr.ecr.{{ cookiecutter.aws_region }}.amazonaws.com/<service>:latest
+
+    Note: if images are not already named as above they can be tagged as follows:
+    $ docker tag <image_ID> {{ cookiecutter.aws_account_id }}.dkr.ecr.{{ cookiecutter.aws_region }}.amazonaws.com/<service>:latest
+
+Start
+.....
+
+1.  Create AWS cluster:
+
+    $ aws ecs --region {{ cookiecutter.aws_region }} create-cluster --cluster-name {{ cookiecutter.project_slug }}
+
+2.  Register task definitions:
+
+    $ aws ecs --region {{ cookiecutter.aws_region }} \
+          register-task-definition --cli-input-yaml file://ecs-task-<task>.yml
+
+    Note: see aws/up
+
+3.  Create the services:
+
+    $ aws ecs --region {{ cookiecutter.aws_region }} \
+          create-service --cli-input-yaml file://ecs-service-<service>.yml
+
+    Note: see aws/up
+
+Stop
+....
+
+1.  Delete the services:
+
+    $ aws ecs --region {{ cookiecutter.aws_region }} delete-service --cluster {{ cookiecutter.project_slug }} --service <service> --force
+
+    Note: see aws/down
+
+2.  Delete the cluster:
+
+    $ aws ecs delete-cluster --cluster {{ cookiecutter.project_slug }}
